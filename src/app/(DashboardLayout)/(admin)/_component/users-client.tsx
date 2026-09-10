@@ -28,7 +28,7 @@ import {
 import { toast } from "@/components/ui/toast";
 import type { IUser } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { getAdminUsers } from "@/service/admin.services";
+import { getAdminUsers } from "@/services/admin.service";
 import { formatDate, initials } from "@/lib/utils";
 
 function UsersClient({
@@ -121,7 +121,10 @@ function UsersClient({
           <label className="text-xs font-medium text-muted-foreground">
             Role
           </label>
-          <Select value={role} onValueChange={(v) => applyFilter(setRole, v as string)}>
+          <Select
+            value={role}
+            onValueChange={(v) => applyFilter(setRole, v as string)}
+          >
             <SelectTrigger className="w-36">
               <SelectValue />
             </SelectTrigger>
@@ -157,7 +160,7 @@ function UsersClient({
         <SkeletonRows />
       ) : (
         <Card>
-          <CardContent className="p-0 overflow-x-auto">
+          <CardContent className="overflow-x-auto p-0">
             <Table>
               <TableHeader>
                 <TableRow>

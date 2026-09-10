@@ -37,7 +37,7 @@ import {
   createProfile,
   updateProfile,
   uploadProfilePhoto,
-} from "@/service/profile.services";
+} from "@/services/profile.service";
 import { useRouter } from "next/navigation";
 
 const API_ORIGIN = new URL(envConfig.NEXT_PUBLIC_API_URL).origin;
@@ -466,7 +466,7 @@ export default function ProfileForm({
               ? isEdit
                 ? "Saving..."
                 : "Creating..."
-              : submitLabel ?? (isEdit ? "Save Changes" : "Create Profile")}
+              : (submitLabel ?? (isEdit ? "Save Changes" : "Create Profile"))}
           </Button>
         )}
       />

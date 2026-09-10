@@ -2,7 +2,7 @@ import { ApplicationsClient } from "../../_component/applications-client";
 import {
   getAdminApplications,
   type AdminApplicationsPage,
-} from "@/service/admin.services";
+} from "@/services/admin.service";
 
 export const dynamic = "force-dynamic";
 

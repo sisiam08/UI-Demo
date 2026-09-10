@@ -2,7 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import MyApplicationsClient from "../../_component/application/my-applications-client";
 import type { IApplication } from "@/interfaces";
-import { getMyApplications } from "@/service/application.services";
+import { getMyApplications } from "@/services/application.service";
 
 export const dynamic = "force-dynamic";
 
@@ -31,9 +31,7 @@ export default async function MyApplicationsPage() {
         </p>
       </div>
 
-      <MyApplicationsClient
-        initialApplications={applications}
-      />
+      <MyApplicationsClient initialApplications={applications} />
     </div>
   );
 }

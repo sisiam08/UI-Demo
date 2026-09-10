@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { IStartupIdea } from "@/interfaces";
-import { getStartupById } from "@/service/startup.services";
+import { getStartupById } from "@/services/startup.service";
 
 export default async function EditStartupPage({
   params,

@@ -21,21 +21,21 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
-import {
-  INDUSTRY_OPTIONS,
-  STARTUP_STAGE_OPTIONS,
-} from "@/constants/options";
+import { INDUSTRY_OPTIONS, STARTUP_STAGE_OPTIONS } from "@/constants/options";
 import type { IStartupIdea, StartupStage } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
 import {
   createStartup,
   updateStartup,
   type StartupInput,
-} from "@/service/startup.services";
+} from "@/services/startup.service";
 import { useRouter } from "next/navigation";
 
 const startupSchema = z.object({
-  title: z.string().min(1, "Title is required").max(160, "Keep it under 160 characters"),
+  title: z
+    .string()
+    .min(1, "Title is required")
+    .max(160, "Keep it under 160 characters"),
   shortDescription: z
     .string()
     .min(1, "Short description is required")

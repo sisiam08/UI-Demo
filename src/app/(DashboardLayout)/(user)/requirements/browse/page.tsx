@@ -3,11 +3,11 @@ import Link from "next/link";
 
 import BrowseClient from "../../_component/requirements/browse-client";
 import type { IProfile, IRequirementWithScore } from "@/interfaces";
-import { getMyProfile } from "@/service/profile.services";
+import { getMyProfile } from "@/services/profile.service";
 import {
   getBrowseRequirements,
   type BrowseRequirementsResult,
-} from "@/service/requirement.services";
+} from "@/services/requirement.service";
 
 export const dynamic = "force-dynamic";
 
@@ -37,9 +37,7 @@ export default async function BrowsePage({
     profile = profileRes;
     requirements = listRes.data;
     nextCursor = listRes.nextCursor;
-  } catch {
-    
-  }
+  } catch {}
 
   const missingFields: string[] = [];
   if (!profile?.role) missingFields.push("Role");

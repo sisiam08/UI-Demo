@@ -22,7 +22,7 @@ import { getApiErrorMessage } from "@/lib/api-error";
 import {
   getBrowseRequirements,
   type BrowseRequirementsResult,
-} from "@/service/requirement.services";
+} from "@/services/requirement.service";
 
 export default function BrowseClient({
   initialRequirements,

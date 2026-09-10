@@ -7,7 +7,7 @@ import {
   getAdminUserById,
   getAdminUserSessions,
   type AdminUserDetail,
-} from "@/service/admin.services";
+} from "@/services/admin.service";
 import { getCurrentUser } from "@/service/auth.services";
 
 export const dynamic = "force-dynamic";
@@ -41,6 +41,10 @@ export default async function AdminUserDetailPage({
   }
 
   return (
-    <UserDetailClient user={user} sessions={sessions} isSuperAdmin={isSuperAdmin} />
+    <UserDetailClient
+      user={user}
+      sessions={sessions}
+      isSuperAdmin={isSuperAdmin}
+    />
   );
 }

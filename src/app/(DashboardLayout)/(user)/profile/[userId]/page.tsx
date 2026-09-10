@@ -1,6 +1,6 @@
 import ProfileView from "../../_component/profile/profile-view";
 import type { IProfile } from "@/interfaces";
-import { getMyProfile, getProfileById } from "@/service/profile.services";
+import { getMyProfile, getProfileById } from "@/services/profile.service";
 
 export default async function ProfilePage({
   params,
@@ -19,7 +19,5 @@ export default async function ProfilePage({
     profile = null;
   }
 
-  return (
-    <ProfileView initialProfile={profile} isOwnProfile={isOwnProfile} />
-  );
+  return <ProfileView initialProfile={profile} isOwnProfile={isOwnProfile} />;
 }

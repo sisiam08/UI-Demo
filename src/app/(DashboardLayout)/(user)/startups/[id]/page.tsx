@@ -7,7 +7,7 @@ import StartupActions from "../../_component/startup/startup-actions";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { IStartupIdea } from "@/interfaces";
-import { getStartupById } from "@/service/startup.services";
+import { getStartupById } from "@/services/startup.service";
 
 export default async function StartupDetailPage({
   params,

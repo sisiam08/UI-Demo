@@ -6,7 +6,7 @@ import ApplyToRequirement from "../../_component/requirements/apply-to-requireme
 import CompatibilityScoreBadge from "../../../../../components/shared/compatibility-score-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { IRequirementWithScore } from "@/interfaces";
-import { getRequirementDetails } from "@/service/requirement.services";
+import { getRequirementDetails } from "@/services/requirement.service";
 
 export default async function RequirementDetailPage({
   params,

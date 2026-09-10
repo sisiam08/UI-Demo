@@ -10,9 +10,15 @@ import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { closeStartup, deleteStartup } from "@/service/startup.services";
+import { closeStartup, deleteStartup } from "@/services/startup.service";
 
-export default function StartupActions({ id, status }: { id: string; status: string }) {
+export default function StartupActions({
+  id,
+  status,
+}: {
+  id: string;
+  status: string;
+}) {
   const router = useRouter();
   const isOpen = status === "open";
   const [confirmClose, setConfirmClose] = useState(false);

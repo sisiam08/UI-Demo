@@ -27,7 +27,10 @@ import {
 import { toast } from "@/components/ui/toast";
 import type { ICofounderRequirement } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { closeRequirement, getAdminRequirements } from "@/service/admin.services";
+import {
+  closeRequirement,
+  getAdminRequirements,
+} from "@/services/admin.service";
 import { formatDate } from "@/lib/utils";
 
 function RequirementsClient({
@@ -97,9 +100,7 @@ function RequirementsClient({
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">
-        Content Moderation — Requirements
-      </h1>
+      <h1 className="text-2xl font-bold">Content Moderation — Requirements</h1>
 
       <div className="flex flex-wrap items-end gap-3 rounded-xl border border-border bg-card p-4">
         <div className="space-y-1">
@@ -154,7 +155,7 @@ function RequirementsClient({
         <SkeletonRows />
       ) : (
         <Card>
-          <CardContent className="p-0 overflow-x-auto">
+          <CardContent className="overflow-x-auto p-0">
             <Table>
               <TableHeader>
                 <TableRow>

@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import type { IUser } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { getCurrentUser, logout } from "@/service/auth.services";
+import { getCurrentUser, logout } from "@/services/auth.service";
 import { cn, initials } from "@/lib/utils";
 
 const NAV_LINKS = [

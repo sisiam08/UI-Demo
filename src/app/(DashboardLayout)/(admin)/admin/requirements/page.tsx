@@ -2,7 +2,7 @@ import { RequirementsClient } from "../../_component/requirements-client";
 import {
   getAdminRequirements,
   type AdminRequirementsPage,
-} from "@/service/admin.services";
+} from "@/services/admin.service";
 
 export const dynamic = "force-dynamic";
 

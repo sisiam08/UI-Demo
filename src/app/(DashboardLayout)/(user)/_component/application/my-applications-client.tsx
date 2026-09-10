@@ -25,7 +25,7 @@ import { getApiErrorMessage } from "@/lib/api-error";
 import {
   getMyApplications,
   withdrawApplication,
-} from "@/service/application.services";
+} from "@/services/application.service";
 import { formatDate } from "@/lib/utils";
 
 export default function MyApplicationsClient({

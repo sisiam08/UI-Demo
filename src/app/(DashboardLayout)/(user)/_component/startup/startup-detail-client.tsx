@@ -24,7 +24,7 @@ import { toast } from "@/components/ui/toast";
 import { PROFILE_ROLE_OPTIONS } from "@/constants/options";
 import type { IStartupIdea, ProfileRole } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { addRequirement } from "@/service/startup.services";
+import { addRequirement } from "@/services/startup.service";
 
 export default function StartupDetailClient({
   id,
@@ -111,9 +111,7 @@ export default function StartupDetailClient({
               <Label>Required skills</Label>
               <MultiSelect
                 value={newReq.requiredSkills}
-                onChange={(v) =>
-                  setNewReq({ ...newReq, requiredSkills: v })
-                }
+                onChange={(v) => setNewReq({ ...newReq, requiredSkills: v })}
                 options={SKILL_OPTIONS}
                 placeholder="Search or type a skill..."
                 allowCustom
@@ -121,9 +119,7 @@ export default function StartupDetailClient({
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="reqCommitment">
-                  Weekly commitment (h)
-                </Label>
+                <Label htmlFor="reqCommitment">Weekly commitment (h)</Label>
                 <Input
                   id="reqCommitment"
                   type="number"
@@ -211,7 +207,9 @@ export default function StartupDetailClient({
                   variant="outline"
                   size="sm"
                   nativeButton={false}
-                  render={<Link href={`/requirements/${req.id}/applications`} />}
+                  render={
+                    <Link href={`/requirements/${req.id}/applications`} />
+                  }
                 >
                   <Users className="size-4" />
                   Applicants

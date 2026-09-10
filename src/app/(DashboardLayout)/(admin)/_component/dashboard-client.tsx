@@ -36,7 +36,7 @@ import {
   type AdminOverview,
   type AdminRequirementStats,
   type AdminSignupRow,
-} from "@/service/admin.services";
+} from "@/services/admin.service";
 
 function DashboardClient() {
   const [overview, setOverview] = useState<AdminOverview | null>(null);

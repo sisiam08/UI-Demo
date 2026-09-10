@@ -1,5 +1,5 @@
 import { UsersClient } from "../../_component/users-client";
-import { getAdminUsers, type AdminUsersPage } from "@/service/admin.services";
+import { getAdminUsers, type AdminUsersPage } from "@/services/admin.service";
 
 export const dynamic = "force-dynamic";
 

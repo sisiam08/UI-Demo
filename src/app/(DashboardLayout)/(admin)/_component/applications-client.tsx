@@ -29,7 +29,7 @@ import {
 import { toast } from "@/components/ui/toast";
 import type { IApplication } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { getAdminApplications } from "@/service/admin.services";
+import { getAdminApplications } from "@/services/admin.service";
 import { formatDate, initials } from "@/lib/utils";
 
 function ApplicationsClient({
@@ -159,7 +159,7 @@ function ApplicationsClient({
         <SkeletonRows />
       ) : (
         <Card>
-          <CardContent className="p-0 overflow-x-auto">
+          <CardContent className="overflow-x-auto p-0">
             <Table>
               <TableHeader>
                 <TableRow>

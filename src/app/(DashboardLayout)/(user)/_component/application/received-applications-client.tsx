@@ -17,7 +17,7 @@ import {
   acceptApplication,
   getReceivedApplications,
   rejectApplication,
-} from "@/service/application.services";
+} from "@/services/application.service";
 import { formatDate, initials } from "@/lib/utils";
 
 type Action = { type: "accept" | "reject"; appId: string };

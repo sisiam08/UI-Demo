@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRouteRule } from "./lib/auth-routes";
 import { SystemRole } from "./constants/user-role";
-import { getCurrentUser } from "./service/auth.services";
+import { getCurrentUser } from "./services/auth.service";
 import { createApiClient, getServerCookieHeader } from "./lib/api-client";
 import { IApiResponse } from "./interfaces";
 

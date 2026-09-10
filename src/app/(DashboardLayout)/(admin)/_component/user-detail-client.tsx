@@ -35,7 +35,7 @@ import {
   updateUserRole,
   updateUserStatus,
   type AdminUserDetail,
-} from "@/service/admin.services";
+} from "@/services/admin.service";
 import { formatDateTime } from "@/lib/utils";
 
 import { ReasonDialog } from "./reason-dialog";
@@ -163,7 +163,7 @@ function UserDetailClient({
               <CardHeader>
                 <CardTitle className="text-base">Startup Ideas</CardTitle>
               </CardHeader>
-              <CardContent className="p-0 overflow-x-auto">
+              <CardContent className="overflow-x-auto p-0">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -207,7 +207,7 @@ function UserDetailClient({
             </Button>
           </div>
           <Card>
-            <CardContent className="p-0 overflow-x-auto">
+            <CardContent className="overflow-x-auto p-0">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -354,7 +354,9 @@ function UserDetailClient({
         onOpenChange={(open) => !open && setRevokeSessionId(null)}
         title="Revoke this session?"
         confirmLabel="Revoke"
-        onConfirm={() => revokeSessionId && void handleRevokeSession(revokeSessionId)}
+        onConfirm={() =>
+          revokeSessionId && void handleRevokeSession(revokeSessionId)
+        }
       />
 
       <ConfirmDialog

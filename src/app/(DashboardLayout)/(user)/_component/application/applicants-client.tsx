@@ -25,8 +25,8 @@ import { getApiErrorMessage } from "@/lib/api-error";
 import {
   acceptApplication,
   rejectApplication,
-} from "@/service/application.services";
-import { getRequirementApplications } from "@/service/requirement.services";
+} from "@/services/application.service";
+import { getRequirementApplications } from "@/services/requirement.service";
 import { formatDate, initials } from "@/lib/utils";
 
 type Action = { type: "accept" | "reject"; appId: string };

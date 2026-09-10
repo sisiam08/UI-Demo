@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import ReceivedApplicationsClient from "../../_component/application/received-applications-client";
 import type { IApplication } from "@/interfaces";
-import { getReceivedApplications } from "@/service/application.services";
+import { getReceivedApplications } from "@/services/application.service";
 
 export const dynamic = "force-dynamic";
 

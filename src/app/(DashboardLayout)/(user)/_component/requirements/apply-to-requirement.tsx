@@ -8,9 +8,13 @@ import { ConfirmDialog } from "../../../../../components/shared/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { applyToRequirement } from "@/service/requirement.services";
+import { applyToRequirement } from "@/services/requirement.service";
 
-export default function ApplyToRequirement({ requirementId }: { requirementId: string }) {
+export default function ApplyToRequirement({
+  requirementId,
+}: {
+  requirementId: string;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -55,4 +59,3 @@ export default function ApplyToRequirement({ requirementId }: { requirementId: s
     </>
   );
 }
-

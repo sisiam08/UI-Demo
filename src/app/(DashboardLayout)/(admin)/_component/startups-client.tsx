@@ -2,7 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { Archive, ChevronLeft, ChevronRight, Search, Trash2 } from "lucide-react";
+import {
+  Archive,
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  Trash2,
+} from "lucide-react";
 import Link from "next/link";
 
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
@@ -29,8 +35,8 @@ import {
 import { toast } from "@/components/ui/toast";
 import type { IStartupIdea } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { getAdminStartups } from "@/service/admin.services";
-import { closeStartup, deleteStartup } from "@/service/startup.services";
+import { getAdminStartups } from "@/services/admin.service";
+import { closeStartup, deleteStartup } from "@/services/startup.service";
 import { formatDate, initials } from "@/lib/utils";
 
 function StartupsClient({
@@ -160,7 +166,7 @@ function StartupsClient({
         <SkeletonRows />
       ) : (
         <Card>
-          <CardContent className="p-0 overflow-x-auto">
+          <CardContent className="overflow-x-auto p-0">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -174,7 +180,9 @@ function StartupsClient({
               <TableBody>
                 {startups.map((startup) => (
                   <TableRow key={startup.id}>
-                    <TableCell className="font-medium">{startup.title}</TableCell>
+                    <TableCell className="font-medium">
+                      {startup.title}
+                    </TableCell>
                     <TableCell>
                       {startup.owner && (
                         <Link
