@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-import { StartupForm } from "../../_component/startup/startup-form";
+import StartupForm from "../../_component/startup/startup-form";
 import {
   Card,
   CardContent,

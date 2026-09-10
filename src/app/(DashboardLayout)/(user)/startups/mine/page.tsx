@@ -3,39 +3,28 @@ import Link from "next/link";
 
 import { EmptyState } from "@/components/shared/empty-state";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { IStartupIdea } from "@/interfaces";
-import { httpGet } from "@/lib/http";
+import { getMyStartups } from "@/service/startup.services";
 
 export const dynamic = "force-dynamic";
 
 export default async function MyStartupsPage() {
   let startups: IStartupIdea[] = [];
   try {
-    startups = (await httpGet<IStartupIdea[]>("/startups/mine")).data;
+    startups = await getMyStartups();
   } catch {
     startups = [];
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold">My Startup Ideas</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Manage your startup ideas and their co-founder requirements
           </p>
         </div>
-        <Button
-          nativeButton={false}
-          render={<Link href="/startups/new" />}
-          className="w-full sm:w-auto"
-        >
-          <Plus className="size-4" />
-          New Startup Idea
-        </Button>
-      </div>
 
       {startups.length === 0 ? (
         <EmptyState

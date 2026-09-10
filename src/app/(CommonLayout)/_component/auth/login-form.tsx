@@ -1,10 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { CardContent, CardFooter } from "@/components/ui/card";
 import {
   Field,
   FieldError,
@@ -14,9 +11,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import { SystemRole } from "@/constants/user-role";
-import { IUser } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { httpPost } from "@/lib/http";
+import { login } from "@/service/auth.services";
 import { useForm } from "@tanstack/react-form";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
@@ -47,19 +43,18 @@ export default function LoginForm() {
     validators: { onChange: loginSchema },
     onSubmit: async ({ value }) => {
       try {
-        const userInfo = {
+        const user = await login({
           email: value.email,
           password: value.password,
-        };
-        const response = await httpPost<IUser>("/auth/login", userInfo);
+        });
 
         toast.add({
           type: "success",
           description: "You have successfully logged in.",
         });
         if (
-          response.data.systemRole === SystemRole.ADMIN ||
-          response.data.systemRole === SystemRole.SUPER_ADMIN
+          user.systemRole === SystemRole.ADMIN ||
+          user.systemRole === SystemRole.SUPER_ADMIN
         ) {
           router.push("/admin/dashboard");
         } else {
@@ -203,7 +198,7 @@ export default function LoginForm() {
       </CardContent>
       <CardFooter className="flex flex-col gap-4 border-t-0 bg-transparent px-4">
         <p className="text-center text-sm text-muted-foreground">
-          Don&apos;t have an account?{" "}
+          Don't have an account?{" "}
           <Link
             href="/signup"
             className="font-medium text-foreground underline-offset-4 hover:underline"

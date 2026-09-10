@@ -1,16 +1,15 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { MyApplicationsClient } from "../../_component/application/my-applications-client";
+import MyApplicationsClient from "../../_component/application/my-applications-client";
 import type { IApplication } from "@/interfaces";
-import { httpGet } from "@/lib/http";
+import { getMyApplications } from "@/service/application.services";
 
 export const dynamic = "force-dynamic";
 
 export default async function MyApplicationsPage() {
   let applications: IApplication[] = [];
   try {
-    const response = await httpGet<IApplication[]>("/applications/mine");
-    applications = response.data;
+    applications = await getMyApplications();
   } catch {
     applications = [];
   }

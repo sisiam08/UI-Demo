@@ -24,7 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { httpPatch } from "@/lib/http";
+import { changePassword } from "@/service/auth.services";
 
 const changePasswordSchema = z
   .object({
@@ -60,7 +60,7 @@ export default function ChangePasswordForm() {
     validators: { onChange: changePasswordSchema },
     onSubmit: async ({ value }) => {
       try {
-        await httpPatch("/auth/change-password", {
+        await changePassword({
           currentPassword: value.currentPassword,
           newPassword: value.newPassword,
         });

@@ -28,9 +28,10 @@ import {
 import { PROFILE_ROLE_LABELS } from "@/constants/options";
 import { envConfig } from "@/env";
 import type { IProfile, ProfileRole } from "@/interfaces";
-import { getApiErrorMessage } from "@/lib/api-error";
-import { httpGet } from "@/lib/http";
+import { getMyProfile } from "@/service/profile.services";
 import { initials } from "@/lib/utils";
+import { toast } from "@/components/ui/toast";
+import { getApiErrorMessage } from "@/lib/api-error";
 
 const ROLE_COLORS: Record<ProfileRole, string> = {
   technical: "bg-blue-500/10 text-blue-500",
@@ -40,11 +41,12 @@ const ROLE_COLORS: Record<ProfileRole, string> = {
   business: "bg-green-500/10 text-green-500",
 };
 
+const API_ORIGIN = new URL(envConfig.NEXT_PUBLIC_API_URL).origin;
+
 function loadPhoto(photoUrl: string | null) {
   if (!photoUrl) return null;
-  return photoUrl.startsWith("http")
-    ? photoUrl
-    : `${envConfig.NEXT_PUBLIC_API_URL}${photoUrl}`;
+  if (photoUrl.startsWith("http")) return photoUrl;
+  return `${API_ORIGIN}${photoUrl}`;
 }
 
 function SocialLinks({ profile }: { profile: IProfile }) {
@@ -96,7 +98,7 @@ function SocialLinks({ profile }: { profile: IProfile }) {
   );
 }
 
-function ProfileView({
+export default function ProfileView({
   initialProfile,
   isOwnProfile,
 }: {
@@ -108,10 +110,9 @@ function ProfileView({
 
   async function reload() {
     try {
-      const response = await httpGet<IProfile>("/profile/me");
-      setProfile(response.data);
+      setProfile(await getMyProfile());
     } catch (error) {
-      console.error(getApiErrorMessage(error));
+      toast.add({ type: "error", description: getApiErrorMessage(error) });
     }
   }
 
@@ -122,12 +123,9 @@ function ProfileView({
           {isOwnProfile ? (
             <>
               <p className="mb-4 text-muted-foreground">
-                You haven&apos;t created a profile yet.
+                You haven't created a profile yet.
               </p>
-              <Button
-                nativeButton={false}
-                render={<Link href="/onboarding" />}
-              >
+              <Button nativeButton={false} render={<Link href="/onboarding" />}>
                 Create Profile
               </Button>
             </>
@@ -176,7 +174,7 @@ function ProfileView({
   return (
     <div className="max-w-2xl space-y-4">
       <Card className="overflow-hidden">
-        <div className="h-24 bg-gradient-to-br from-primary/30 via-accent/20 to-primary/10" />
+        <div className="h-24 bg-linear-to-br from-primary/30 via-accent/20 to-primary/10" />
         <CardContent className="relative px-6 pt-0 pb-6">
           <div className="-mt-12 mb-4 flex items-end justify-between gap-3">
             <div className="shrink-0 rounded-full ring-4 ring-card">
@@ -188,7 +186,7 @@ function ProfileView({
                   className="size-20 rounded-full object-cover"
                 />
               ) : (
-                <div className="flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-2xl font-bold text-white select-none">
+                <div className="flex size-20 items-center justify-center rounded-full bg-linear-to-br from-primary to-accent text-2xl font-bold text-white select-none">
                   {initials(profile.user?.fullName ?? "?")}
                 </div>
               )}
@@ -339,5 +337,3 @@ function ProfileView({
     </div>
   );
 }
-
-export { ProfileView };

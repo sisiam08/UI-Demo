@@ -8,7 +8,7 @@ import { ConfirmDialog } from "../../../../../components/shared/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { httpPost } from "@/lib/http";
+import { applyToRequirement } from "@/service/requirement.services";
 
 export default function ApplyToRequirement({ requirementId }: { requirementId: string }) {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function ApplyToRequirement({ requirementId }: { requirementId: s
   async function handleApply() {
     setSubmitting(true);
     try {
-      await httpPost<void>(`/requirements/${requirementId}/apply`);
+      await applyToRequirement(requirementId);
       toast.add({
         type: "success",
         description: "Your application has been submitted.",

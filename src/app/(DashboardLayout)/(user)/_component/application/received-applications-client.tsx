@@ -1,11 +1,10 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 import { Check, MessageSquare, UsersRound, X } from "lucide-react";
 import Link from "next/link";
 
-import CompatibilityScoreBadge from "../shared/compatibility-score-badge";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
 import { StatusBadge } from "@/components/shared/status-badge";
@@ -14,33 +13,39 @@ import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "@/components/ui/toast";
 import type { IApplication } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { httpGet, httpPatch } from "@/lib/http";
+import {
+  acceptApplication,
+  getReceivedApplications,
+  rejectApplication,
+} from "@/service/application.services";
 import { formatDate, initials } from "@/lib/utils";
 
 type Action = { type: "accept" | "reject"; appId: string };
 
-function ReceivedApplicationsClient({
+export default function ReceivedApplicationsClient({
   initialApplications,
 }: {
   initialApplications: IApplication[];
 }) {
-  const [applications, setApplications] = useState<IApplication[]>(
-    initialApplications,
-  );
+  const [applications, setApplications] =
+    useState<IApplication[]>(initialApplications);
   const [action, setAction] = useState<Action | null>(null);
 
-  const reload = useCallback(async () => {
+  async function reload() {
     try {
-      const response = await httpGet<IApplication[]>("/applications/received");
-      setApplications(response.data);
+      setApplications(await getReceivedApplications());
     } catch (error) {
       toast.add({ type: "error", description: getApiErrorMessage(error) });
     }
-  }, []);
+  }
 
   async function handleAction(current: Action) {
     try {
-      await httpPatch<void>(`/applications/${current.appId}/${current.type}`);
+      if (current.type === "accept") {
+        await acceptApplication(current.appId);
+      } else {
+        await rejectApplication(current.appId);
+      }
       toast.add({
         type: "success",
         description: `Application ${current.type === "accept" ? "accepted" : "rejected"}`,
@@ -56,7 +61,7 @@ function ReceivedApplicationsClient({
       <EmptyState
         icon={<UsersRound className="size-12" />}
         title="No applications yet"
-        description="When someone applies to one of your startup requirements, they&apos;ll appear here."
+        description="When someone applies to one of your startup requirements, they'll appear here."
         actionLabel="View my startups"
         actionHref="/startups/mine"
       />
@@ -134,9 +139,7 @@ function ReceivedApplicationsClient({
         open={!!action}
         onOpenChange={(open) => !open && setAction(null)}
         title={
-          action?.type === "accept"
-            ? "Accept applicant?"
-            : "Reject applicant?"
+          action?.type === "accept" ? "Accept applicant?" : "Reject applicant?"
         }
         description={
           action?.type === "accept"
@@ -150,5 +153,3 @@ function ReceivedApplicationsClient({
     </>
   );
 }
-
-export { ReceivedApplicationsClient };

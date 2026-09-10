@@ -5,7 +5,7 @@ import { useCallback, useState } from "react";
 import { Check, MessageSquare, X } from "lucide-react";
 import Link from "next/link";
 
-import CompatibilityScoreBadge from "../shared/compatibility-score-badge";
+import CompatibilityScoreBadge from "../../../../../components/shared/compatibility-score-badge";
 import { ConfirmDialog } from "../../../../../components/shared/confirm-dialog";
 import { EmptyState } from "../../../../../components/shared/empty-state";
 import { StatusBadge } from "../../../../../components/shared/status-badge";
@@ -22,7 +22,11 @@ import {
 import { toast } from "@/components/ui/toast";
 import type { IApplication } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { httpGet, httpPatch } from "@/lib/http";
+import {
+  acceptApplication,
+  rejectApplication,
+} from "@/service/application.services";
+import { getRequirementApplications } from "@/service/requirement.services";
 import { formatDate, initials } from "@/lib/utils";
 
 type Action = { type: "accept" | "reject"; appId: string };
@@ -40,10 +44,7 @@ export default function ApplicantsClient({
 
   const reload = useCallback(async () => {
     try {
-      const response = await httpGet<IApplication[]>(
-        `/requirements/${id}/applications`
-      );
-      setApplications(response.data);
+      setApplications(await getRequirementApplications(id));
     } catch (error) {
       toast.add({ type: "error", description: getApiErrorMessage(error) });
     }
@@ -51,7 +52,11 @@ export default function ApplicantsClient({
 
   async function handleAction(current: Action) {
     try {
-      await httpPatch<void>(`/applications/${current.appId}/${current.type}`);
+      if (current.type === "accept") {
+        await acceptApplication(current.appId);
+      } else {
+        await rejectApplication(current.appId);
+      }
       toast.add({ type: "success", description: "Action completed" });
       await reload();
     } catch (error) {
@@ -242,4 +247,3 @@ export default function ApplicantsClient({
     </>
   );
 }
-

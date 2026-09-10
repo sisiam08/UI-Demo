@@ -20,10 +20,10 @@ import {
 import { toast } from "@/components/ui/toast";
 import type { IUserSession } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { httpDelete, httpGet, httpPost } from "@/lib/http";
+import { getActiveSessions, logout, revokeSession } from "@/service/auth.services";
 import { formatDateTime } from "@/lib/utils";
 
-function SessionsClient({
+export default function SessionsClient({
   initialSessions,
 }: {
   initialSessions: IUserSession[];
@@ -34,8 +34,7 @@ function SessionsClient({
 
   const reload = useCallback(async () => {
     try {
-      const response = await httpGet<IUserSession[]>("/auth/active-sessions");
-      setSessions(response.data);
+      setSessions(await getActiveSessions());
     } catch (error) {
       toast.add({ type: "error", description: getApiErrorMessage(error) });
     }
@@ -43,7 +42,7 @@ function SessionsClient({
 
   async function handleRevoke(id: string) {
     try {
-      await httpDelete<void>(`/auth/sessions/${id}`);
+      await revokeSession(id);
       toast.add({ type: "success", description: "Session revoked" });
       await reload();
     } catch (error) {
@@ -53,7 +52,7 @@ function SessionsClient({
 
   async function handleLogout() {
     try {
-      await httpPost("/auth/logout", {});
+      await logout();
     } catch (error) {
       toast.add({ type: "error", description: getApiErrorMessage(error) });
     } finally {
@@ -198,5 +197,3 @@ function SessionsClient({
     </>
   );
 }
-
-export { SessionsClient };

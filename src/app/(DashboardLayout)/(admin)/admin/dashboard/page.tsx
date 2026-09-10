@@ -1,7 +1,5 @@
+import { DashboardClient } from "../../_component/dashboard-client";
+
 export default function AdminDashboardPage() {
-  return (
-    <div>
-      <h1>This is Admin Dashboard Page</h1>
-    </div>
-  );
+  return <DashboardClient />;
 }

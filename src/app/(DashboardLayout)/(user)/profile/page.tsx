@@ -1,13 +1,13 @@
-import { ProfileView } from "../_component/profile/profile-view";
+import ProfileView from "../_component/profile/profile-view";
 import type { IProfile } from "@/interfaces";
-import { httpGet } from "@/lib/http";
+import { getMyProfile } from "@/service/profile.services";
 
 export const dynamic = "force-dynamic";
 
 export default async function MyProfilePage() {
   let profile: IProfile | null = null;
   try {
-    profile = (await httpGet<IProfile>("/profile/me")).data;
+    profile = await getMyProfile();
   } catch {
     profile = null;
   }

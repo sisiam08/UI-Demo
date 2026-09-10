@@ -2,16 +2,12 @@ import { ArrowLeft, Tag } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { StartupDetailClient } from "../../_component/startup/startup-detail-client";
+import StartupDetailClient from "../../_component/startup/startup-detail-client";
+import StartupActions from "../../_component/startup/startup-actions";
 import { StatusBadge } from "@/components/shared/status-badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { IStartupIdea } from "@/interfaces";
-import { httpGet } from "@/lib/http";
+import { getStartupById } from "@/service/startup.services";
 
 export default async function StartupDetailPage({
   params,
@@ -22,7 +18,7 @@ export default async function StartupDetailPage({
 
   let startup: IStartupIdea | null = null;
   try {
-    startup = (await httpGet<IStartupIdea>(`/startups/${id}`)).data;
+    startup = await getStartupById(id);
   } catch {
     startup = null;
   }
@@ -51,6 +47,7 @@ export default async function StartupDetailPage({
             {startup.shortDescription}
           </p>
         </div>
+        <StartupActions id={startup.id} status={startup.status} />
       </div>
 
       <Card>

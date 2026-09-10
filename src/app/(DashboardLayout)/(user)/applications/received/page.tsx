@@ -1,17 +1,16 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-import { ReceivedApplicationsClient } from "../../_component/application/received-applications-client";
+import ReceivedApplicationsClient from "../../_component/application/received-applications-client";
 import type { IApplication } from "@/interfaces";
-import { httpGet } from "@/lib/http";
+import { getReceivedApplications } from "@/service/application.services";
 
 export const dynamic = "force-dynamic";
 
 export default async function ReceivedApplicationsPage() {
   let applications: IApplication[] = [];
   try {
-    applications = (await httpGet<IApplication[]>("/applications/received"))
-      .data;
+    applications = await getReceivedApplications();
   } catch {
     applications = [];
   }

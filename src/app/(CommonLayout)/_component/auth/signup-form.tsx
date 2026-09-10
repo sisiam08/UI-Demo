@@ -17,9 +17,8 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
-import { ISignupResponse, IUser } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { httpPost } from "@/lib/http";
+import { signup, verifyOtp } from "@/service/auth.services";
 import { useForm } from "@tanstack/react-form";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
@@ -56,18 +55,14 @@ export default function SignupForm() {
     validators: { onChange: signupSchema },
     onSubmit: async ({ value }) => {
       try {
-        const userInfo = {
+        const result = await signup({
           fullName: value.fullName,
           email: value.email,
           password: value.password,
-        };
-        const response = await httpPost<ISignupResponse>(
-          "/auth/signup",
-          userInfo
-        );
+        });
         toast.add({
           type: "success",
-          description: response.data.message,
+          description: result.message,
         });
 
         setStep("verify");
@@ -84,7 +79,7 @@ export default function SignupForm() {
     validators: { onChange: otpSchema },
     onSubmit: async ({ value }) => {
       try {
-        await httpPost<IUser>("/auth/signup/verify-otp", {
+        await verifyOtp({
           email: signupForm.state.values.email,
           code: value.code,
         });

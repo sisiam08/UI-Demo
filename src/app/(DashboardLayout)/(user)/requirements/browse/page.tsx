@@ -3,12 +3,11 @@ import Link from "next/link";
 
 import BrowseClient from "../../_component/requirements/browse-client";
 import type { IProfile, IRequirementWithScore } from "@/interfaces";
-import { httpGet } from "@/lib/http";
-
-interface BrowseResult {
-  data: IRequirementWithScore[];
-  nextCursor: { createdAt: string; id: string } | null;
-}
+import { getMyProfile } from "@/service/profile.services";
+import {
+  getBrowseRequirements,
+  type BrowseRequirementsResult,
+} from "@/service/requirement.services";
 
 export const dynamic = "force-dynamic";
 
@@ -26,23 +25,18 @@ export default async function BrowsePage({
   const industry = (sp.industry ?? "all").toString();
   const stage = (sp.stage ?? "all").toString();
 
-  const queryParams: Record<string, string> = {};
-  if (role !== "all") queryParams.role = role;
-  if (industry !== "all") queryParams.industry = industry;
-  if (stage !== "all") queryParams.stage = stage;
-
   let profile: IProfile | null = null;
   let requirements: IRequirementWithScore[] = [];
-  let nextCursor: BrowseResult["nextCursor"] = null;
+  let nextCursor: BrowseRequirementsResult["nextCursor"] = null;
 
   try {
     const [profileRes, listRes] = await Promise.all([
-      httpGet<IProfile>("/profile/me"),
-      httpGet<BrowseResult>("/requirements/browse", queryParams),
+      getMyProfile(),
+      getBrowseRequirements({ role, industry, stage }),
     ]);
-    profile = profileRes.data;
-    requirements = listRes.data.data;
-    nextCursor = listRes.data.nextCursor;
+    profile = profileRes;
+    requirements = listRes.data;
+    nextCursor = listRes.nextCursor;
   } catch {
     
   }

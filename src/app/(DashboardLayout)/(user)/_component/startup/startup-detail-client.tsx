@@ -2,13 +2,12 @@
 
 import { useState } from "react";
 
-import { Archive, Plus, Trash2, Users } from "lucide-react";
+import { Plus, Users } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { MultiSelect } from "@/components/shared/multi-select";
 import { SKILL_OPTIONS } from "@/constants/options";
-import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,9 +24,9 @@ import { toast } from "@/components/ui/toast";
 import { PROFILE_ROLE_OPTIONS } from "@/constants/options";
 import type { IStartupIdea, ProfileRole } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { httpDelete, httpPatch, httpPost } from "@/lib/http";
+import { addRequirement } from "@/service/startup.services";
 
-function StartupDetailClient({
+export default function StartupDetailClient({
   id,
   initialStartup,
 }: {
@@ -38,8 +37,6 @@ function StartupDetailClient({
   const isOpen = initialStartup.status === "open";
 
   const [showAddReq, setShowAddReq] = useState(false);
-  const [confirmClose, setConfirmClose] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const [newReq, setNewReq] = useState({
     requiredRole: "technical" as ProfileRole,
     requiredSkills: [] as string[],
@@ -47,29 +44,9 @@ function StartupDetailClient({
     equityOffered: "",
   });
 
-  async function handleClose() {
-    try {
-      await httpPatch<void>(`/startups/${id}/close`);
-      toast.add({ type: "success", description: "Startup closed" });
-      router.refresh();
-    } catch (error) {
-      toast.add({ type: "error", description: getApiErrorMessage(error) });
-    }
-  }
-
-  async function handleDelete() {
-    try {
-      await httpDelete<void>(`/startups/${id}`);
-      toast.add({ type: "success", description: "Startup deleted" });
-      router.push("/startups/mine");
-    } catch (error) {
-      toast.add({ type: "error", description: getApiErrorMessage(error) });
-    }
-  }
-
   async function handleAddRequirement() {
     try {
-      await httpPost<void>(`/startups/${id}/requirements`, {
+      await addRequirement(id, {
         requiredRole: newReq.requiredRole,
         requiredSkills: newReq.requiredSkills,
         requiredWeeklyCommitment: Number(newReq.requiredWeeklyCommitment),
@@ -95,36 +72,16 @@ function StartupDetailClient({
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-lg font-semibold">Requirements</h2>
-        <div className="flex gap-2">
-          {isOpen && (
-            <Button
-              size="sm"
-              onClick={() => setShowAddReq((v) => !v)}
-              className="w-full sm:w-auto"
-            >
-              <Plus className="size-4" />
-              Add Requirement
-            </Button>
-          )}
-          {isOpen && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setConfirmClose(true)}
-            >
-              <Archive className="size-4" />
-              Close
-            </Button>
-          )}
+        {isOpen && (
           <Button
-            variant="destructive"
             size="sm"
-            onClick={() => setConfirmDelete(true)}
+            onClick={() => setShowAddReq((v) => !v)}
+            className="w-full sm:w-auto"
           >
-            <Trash2 className="size-4" />
-            Delete
+            <Plus className="size-4" />
+            Add Requirement
           </Button>
-        </div>
+        )}
       </div>
 
       {showAddReq && (
@@ -264,26 +221,6 @@ function StartupDetailClient({
           ))}
         </div>
       )}
-
-      <ConfirmDialog
-        open={confirmClose}
-        onOpenChange={setConfirmClose}
-        title="Close this startup idea?"
-        description="It will no longer appear in browse results. You can still view it."
-        confirmLabel="Close"
-        onConfirm={() => void handleClose()}
-      />
-      <ConfirmDialog
-        open={confirmDelete}
-        onOpenChange={setConfirmDelete}
-        title="Delete this startup idea?"
-        description="This is irreversible. All its requirements and applications will be deleted too."
-        confirmLabel="Delete permanently"
-        variant="destructive"
-        onConfirm={() => void handleDelete()}
-      />
     </div>
   );
 }
-
-export { StartupDetailClient };

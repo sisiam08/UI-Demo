@@ -27,7 +27,11 @@ import {
 } from "@/constants/options";
 import type { IStartupIdea, StartupStage } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { httpPatch, httpPost } from "@/lib/http";
+import {
+  createStartup,
+  updateStartup,
+  type StartupInput,
+} from "@/service/startup.services";
 import { useRouter } from "next/navigation";
 
 const startupSchema = z.object({
@@ -41,7 +45,7 @@ const startupSchema = z.object({
   startupStage: z.string().min(1, "Select a stage"),
 });
 
-function StartupForm({ startup }: { startup?: IStartupIdea }) {
+export default function StartupForm({ startup }: { startup?: IStartupIdea }) {
   const router = useRouter();
   const isEdit = !!startup;
 
@@ -55,7 +59,7 @@ function StartupForm({ startup }: { startup?: IStartupIdea }) {
     },
     validators: { onChange: startupSchema },
     onSubmit: async ({ value }) => {
-      const payload = {
+      const payload: StartupInput = {
         title: value.title,
         shortDescription: value.shortDescription,
         fullDescription: value.fullDescription,
@@ -65,16 +69,16 @@ function StartupForm({ startup }: { startup?: IStartupIdea }) {
 
       try {
         if (isEdit) {
-          await httpPatch<IStartupIdea>(`/startups/${startup.id}`, payload);
+          await updateStartup(startup.id, payload);
           toast.add({ type: "success", description: "Startup updated" });
           router.push(`/startups/${startup.id}`);
         } else {
-          const response = await httpPost<IStartupIdea>("/startups", payload);
+          const created = await createStartup(payload);
           toast.add({
             type: "success",
             description: "Startup idea created!",
           });
-          router.push(`/startups/${response.data.id}`);
+          router.push(`/startups/${created.id}`);
         }
       } catch (error) {
         toast.add({ type: "error", description: getApiErrorMessage(error) });
@@ -250,5 +254,3 @@ function StartupForm({ startup }: { startup?: IStartupIdea }) {
     </form>
   );
 }
-
-export { StartupForm };

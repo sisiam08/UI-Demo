@@ -2,7 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { StartupForm } from "../../../_component/startup/startup-form";
+import StartupForm from "../../../_component/startup/startup-form";
 import {
   Card,
   CardContent,
@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { IStartupIdea } from "@/interfaces";
-import { httpGet } from "@/lib/http";
+import { getStartupById } from "@/service/startup.services";
 
 export default async function EditStartupPage({
   params,
@@ -22,7 +22,7 @@ export default async function EditStartupPage({
 
   let startup: IStartupIdea | null = null;
   try {
-    startup = (await httpGet<IStartupIdea>(`/startups/${id}`)).data;
+    startup = await getStartupById(id);
   } catch {
     startup = null;
   }

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import ApplicantsClient from "../../../_component/application/applicants-client";
 import type { IApplication } from "@/interfaces";
-import { httpGet } from "@/lib/http";
+import { getRequirementApplications } from "@/service/requirement.services";
 
 export default async function ApplicantsPage({
   params,
@@ -14,9 +14,7 @@ export default async function ApplicantsPage({
 
   let applications: IApplication[] = [];
   try {
-    applications = (
-      await httpGet<IApplication[]>(`/requirements/${id}/applications`)
-    ).data;
+    applications = await getRequirementApplications(id);
   } catch {
     applications = [];
   }

@@ -26,9 +26,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import type { IUser } from "@/interfaces";
-import { getCurrentUser } from "@/lib/auth";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { httpPost } from "@/lib/http";
+import { getCurrentUser, logout } from "@/service/auth.services";
 import { cn, initials } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -82,7 +81,7 @@ export default function Navbar() {
 
   async function handleLogout() {
     try {
-      await httpPost("/auth/logout", {});
+      await logout();
     } catch (error) {
       toast.add({ type: "error", description: getApiErrorMessage(error) });
     } finally {

@@ -1,16 +1,16 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-import { SessionsClient } from "../_component/session/sessions-client";
+import SessionsClient from "../_component/session/sessions-client";
 import type { IUserSession } from "@/interfaces";
-import { httpGet } from "@/lib/http";
+import { getActiveSessions } from "@/service/auth.services";
 
 export const dynamic = "force-dynamic";
 
 export default async function SessionsPage() {
   let sessions: IUserSession[] = [];
   try {
-    sessions = (await httpGet<IUserSession[]>("/auth/active-sessions")).data;
+    sessions = await getActiveSessions();
   } catch {
     sessions = [];
   }

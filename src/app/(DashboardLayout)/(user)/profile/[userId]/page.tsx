@@ -1,6 +1,6 @@
-import { ProfileView } from "../../_component/profile/profile-view";
+import ProfileView from "../../_component/profile/profile-view";
 import type { IProfile } from "@/interfaces";
-import { httpGet } from "@/lib/http";
+import { getMyProfile, getProfileById } from "@/service/profile.services";
 
 export default async function ProfilePage({
   params,
@@ -9,11 +9,12 @@ export default async function ProfilePage({
 }) {
   const { userId: targetUserId } = await params;
   const isOwnProfile = !targetUserId;
-  const endpoint = isOwnProfile ? "/profile/me" : `/profile/${targetUserId}`;
 
   let profile: IProfile | null = null;
   try {
-    profile = (await httpGet<IProfile>(endpoint)).data;
+    profile = isOwnProfile
+      ? await getMyProfile()
+      : await getProfileById(targetUserId as string);
   } catch {
     profile = null;
   }

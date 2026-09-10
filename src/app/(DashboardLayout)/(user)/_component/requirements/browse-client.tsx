@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Clock, Filter, Search } from "lucide-react";
 import Link from "next/link";
 
-import CompatibilityScoreBadge from "../shared/compatibility-score-badge";
+import CompatibilityScoreBadge from "../../../../../components/shared/compatibility-score-badge";
 import { EmptyState } from "../../../../../components/shared/empty-state";
 import { SkeletonCards } from "../../../../../components/shared/skeletons";
 import { Button } from "@/components/ui/button";
@@ -19,26 +19,10 @@ import {
 } from "@/constants/options";
 import type { IRequirementWithScore } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { httpGet } from "@/lib/http";
-
-interface BrowseResult {
-  data: IRequirementWithScore[];
-  nextCursor: { createdAt: string; id: string } | null;
-}
-
-function buildParams(
-  role: string,
-  industry: string,
-  stage: string,
-  cursor?: { createdAt: string; id: string }
-) {
-  const params: Record<string, string> = {};
-  if (role !== "all") params.role = role;
-  if (industry !== "all") params.industry = industry;
-  if (stage !== "all") params.stage = stage;
-  if (cursor) params.cursor = JSON.stringify(cursor);
-  return params;
-}
+import {
+  getBrowseRequirements,
+  type BrowseRequirementsResult,
+} from "@/service/requirement.services";
 
 export default function BrowseClient({
   initialRequirements,
@@ -48,7 +32,7 @@ export default function BrowseClient({
   initialStage,
 }: {
   initialRequirements: IRequirementWithScore[];
-  initialNextCursor: BrowseResult["nextCursor"];
+  initialNextCursor: BrowseRequirementsResult["nextCursor"];
   initialRole: string;
   initialIndustry: string;
   initialStage: string;
@@ -68,14 +52,16 @@ export default function BrowseClient({
     async (cursor?: { createdAt: string; id: string }) => {
       const isFirst = !cursor;
       try {
-        const response = await httpGet<BrowseResult>(
-          "/requirements/browse",
-          buildParams(role, industry, stage, cursor)
-        );
+        const result = await getBrowseRequirements({
+          role,
+          industry,
+          stage,
+          cursor,
+        });
         setRequirements((prev) =>
-          isFirst ? response.data.data : [...prev, ...response.data.data]
+          isFirst ? result.data : [...prev, ...result.data]
         );
-        setNextCursor(response.data.nextCursor);
+        setNextCursor(result.nextCursor);
       } catch (error) {
         toast.add({ type: "error", description: getApiErrorMessage(error) });
         if (isFirst) {

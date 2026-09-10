@@ -31,10 +31,16 @@ import {
   SKILL_OPTIONS,
 } from "@/constants/options";
 import { envConfig } from "@/env";
-import type { IProfile, IProfileFormValues, ProfileRole } from "@/interfaces";
+import type { IProfileFormValues, ProfileRole } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { httpPatch, httpPost, httpUpload } from "@/lib/http";
+import {
+  createProfile,
+  updateProfile,
+  uploadProfilePhoto,
+} from "@/service/profile.services";
 import { useRouter } from "next/navigation";
+
+const API_ORIGIN = new URL(envConfig.NEXT_PUBLIC_API_URL).origin;
 
 const urlSchema = z
   .string()
@@ -101,11 +107,11 @@ export default function ProfileForm({
 
       try {
         if (isEdit) {
-          await httpPatch<IProfile>("/profile/me", profileData);
+          await updateProfile(profileData);
           toast.add({ type: "success", description: "Profile updated" });
           onSuccess?.();
         } else {
-          await httpPost<IProfile>("/profile", profileData);
+          await createProfile(profileData);
           toast.add({
             type: "success",
             description: "Profile created successfully",
@@ -121,14 +127,14 @@ export default function ProfileForm({
   async function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      toast.add({ type: "error", description: "Max 2MB allowed" });
+    if (file.size > 5 * 1024 * 1024) {
+      toast.add({ type: "error", description: "Max 5MB allowed" });
       return;
     }
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    if (!["image/jpeg", "image/png", "image/jpg"].includes(file.type)) {
       toast.add({
         type: "error",
-        description: "Only JPEG, PNG, WebP allowed",
+        description: "Only JPEG, JPG, and PNG allowed",
       });
       return;
     }
@@ -136,11 +142,8 @@ export default function ProfileForm({
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const response = await httpUpload<{ photoUrl: string }>(
-        "/profile/photo",
-        fd
-      );
-      form.setFieldValue("photoUrl", response.data.photoUrl);
+      const result = await uploadProfilePhoto(fd);
+      form.setFieldValue("photoUrl", result.photoUrl);
       toast.add({ type: "success", description: "Photo uploaded" });
     } catch (error) {
       toast.add({ type: "error", description: getApiErrorMessage(error) });
@@ -153,7 +156,7 @@ export default function ProfileForm({
   const photoSrc = photoUrl
     ? photoUrl.startsWith("http")
       ? photoUrl
-      : `${envConfig.NEXT_PUBLIC_API_URL}${photoUrl}`
+      : `${API_ORIGIN}${photoUrl}`
     : null;
 
   return (
@@ -204,7 +207,7 @@ export default function ProfileForm({
             </Button>
           )}
           <p className="mt-1 text-xs text-muted-foreground">
-            JPG, JPEG, or PNG. Max 2MB.
+            JPG, JPEG, or PNG. Max 5MB.
           </p>
         </div>
       </div>

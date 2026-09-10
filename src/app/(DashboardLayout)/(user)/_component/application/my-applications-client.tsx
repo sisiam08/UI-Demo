@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 import { Ban, MessageSquare } from "lucide-react";
 import Link from "next/link";
 
-import CompatibilityScoreBadge from "../shared/compatibility-score-badge";
+import CompatibilityScoreBadge from "../../../../../components/shared/compatibility-score-badge";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
 import { StatusBadge } from "@/components/shared/status-badge";
@@ -22,31 +22,32 @@ import {
 import { toast } from "@/components/ui/toast";
 import type { IApplication } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { httpGet, httpPatch } from "@/lib/http";
+import {
+  getMyApplications,
+  withdrawApplication,
+} from "@/service/application.services";
 import { formatDate } from "@/lib/utils";
 
-function MyApplicationsClient({
+export default function MyApplicationsClient({
   initialApplications,
 }: {
   initialApplications: IApplication[];
 }) {
-  const [applications, setApplications] = useState<IApplication[]>(
-    initialApplications,
-  );
+  const [applications, setApplications] =
+    useState<IApplication[]>(initialApplications);
   const [withdrawId, setWithdrawId] = useState<string | null>(null);
 
-  const reload = useCallback(async () => {
+  async function reload() {
     try {
-      const response = await httpGet<IApplication[]>("/applications/mine");
-      setApplications(response.data);
+      setApplications(await getMyApplications());
     } catch (error) {
       toast.add({ type: "error", description: getApiErrorMessage(error) });
     }
-  }, []);
+  }
 
   async function handleWithdraw(id: string) {
     try {
-      await httpPatch<void>(`/applications/${id}/withdraw`);
+      await withdrawApplication(id);
       toast.add({ type: "success", description: "Application withdrawn" });
       await reload();
     } catch (error) {
@@ -120,7 +121,7 @@ function MyApplicationsClient({
       </div>
 
       <Card className="hidden sm:block">
-        <CardContent className="p-0 overflow-x-auto">
+        <CardContent className="overflow-x-auto p-0">
           <Table>
             <TableHeader>
               <TableRow>
@@ -196,5 +197,3 @@ function MyApplicationsClient({
     </>
   );
 }
-
-export { MyApplicationsClient };

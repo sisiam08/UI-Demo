@@ -3,10 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import ApplyToRequirement from "../../_component/requirements/apply-to-requirement";
-import CompatibilityScoreBadge from "../../_component/shared/compatibility-score-badge";
+import CompatibilityScoreBadge from "../../../../../components/shared/compatibility-score-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { IRequirementWithScore } from "@/interfaces";
-import { httpGet } from "@/lib/http";
+import { getRequirementDetails } from "@/service/requirement.services";
 
 export default async function RequirementDetailPage({
   params,
@@ -17,10 +17,7 @@ export default async function RequirementDetailPage({
 
   let requirementData: IRequirementWithScore | null = null;
   try {
-    const response = await httpGet<IRequirementWithScore>(
-      `/requirements/${id}`
-    );
-    requirementData = response.data;
+    requirementData = await getRequirementDetails(id);
   } catch {
     requirementData = null;
   }
