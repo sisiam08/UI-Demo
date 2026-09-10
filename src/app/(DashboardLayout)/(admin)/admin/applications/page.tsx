@@ -1,7 +1,7 @@
+import type { AdminApplicationsPage } from "@/interfaces";
 import { ApplicationsClient } from "../../_component/applications-client";
 import {
   getAdminApplications,
-  type AdminApplicationsPage,
 } from "@/services/admin.service";
 
 export const dynamic = "force-dynamic";

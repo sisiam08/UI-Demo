@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import SessionsClient from "../_component/session/sessions-client";
 import type { IUserSession } from "@/interfaces";
-import { getActiveSessions } from "@/service/auth.services";
+import { getActiveSessions } from "@/services/auth.service";
 
 export const dynamic = "force-dynamic";
 

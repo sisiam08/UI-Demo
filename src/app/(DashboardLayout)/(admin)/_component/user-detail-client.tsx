@@ -27,14 +27,13 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/toast";
 import type { SystemRole } from "@/constants/user-role";
-import type { IUserSession, UserStatus } from "@/interfaces";
+import type { AdminUserDetail, IUserSession, UserStatus } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
 import {
   revokeAdminSession,
   revokeAllUserSessions,
   updateUserRole,
   updateUserStatus,
-  type AdminUserDetail,
 } from "@/services/admin.service";
 import { formatDateTime } from "@/lib/utils";
 

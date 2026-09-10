@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { signup, verifyOtp } from "@/service/auth.services";
+import { signup, verifyOtp } from "@/services/auth.service";
 import { useForm } from "@tanstack/react-form";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";

@@ -1,7 +1,7 @@
+import type { AdminRequirementsPage } from "@/interfaces";
 import { RequirementsClient } from "../../_component/requirements-client";
 import {
   getAdminRequirements,
-  type AdminRequirementsPage,
 } from "@/services/admin.service";
 
 export const dynamic = "force-dynamic";

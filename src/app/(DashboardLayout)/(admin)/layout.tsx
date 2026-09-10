@@ -1,6 +1,6 @@
 import AdminSidebar from "./_component/shared/admin-sidebar";
 import AdminTopbar from "./_component/shared/admin-topbar";
-import { getCurrentUser } from "@/service/auth.services";
+import { getCurrentUser } from "@/services/auth.service";
 
 export default async function AdminLayout({
   children,

@@ -24,7 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { changePassword } from "@/service/auth.services";
+import { changePassword } from "@/services/auth.service";
 
 const changePasswordSchema = z
   .object({

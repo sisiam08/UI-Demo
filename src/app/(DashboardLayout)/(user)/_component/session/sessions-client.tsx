@@ -20,7 +20,11 @@ import {
 import { toast } from "@/components/ui/toast";
 import type { IUserSession } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { getActiveSessions, logout, revokeSession } from "@/service/auth.services";
+import {
+  getActiveSessions,
+  logout,
+  revokeSession,
+} from "@/services/auth.service";
 import { formatDateTime } from "@/lib/utils";
 
 export default function SessionsClient({
@@ -124,7 +128,7 @@ export default function SessionsClient({
       </div>
 
       <Card className="hidden sm:block">
-        <CardContent className="p-0 overflow-x-auto">
+        <CardContent className="overflow-x-auto p-0">
           <Table>
             <TableHeader>
               <TableRow>
@@ -164,7 +168,11 @@ export default function SessionsClient({
                   </TableCell>
                   <TableCell className="text-right">
                     {idx === 0 ? (
-                      <Button size="sm" variant="outline" onClick={handleLogout}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleLogout}
+                      >
                         Log out
                       </Button>
                     ) : (

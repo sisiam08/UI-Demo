@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import { SystemRole } from "@/constants/user-role";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { login } from "@/service/auth.services";
+import { login } from "@/services/auth.service";
 import { useForm } from "@tanstack/react-form";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";

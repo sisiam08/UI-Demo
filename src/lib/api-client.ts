@@ -47,14 +47,6 @@ export const createApiClient = (cookieHeader?: string) =>
 
 const api = createApiClient();
 
-// const refreshClient = axios.create({
-//   baseURL: API_URL,
-//   withCredentials: true,
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-// });
-
 const refreshClient = createApiClient();
 
 const refreshAccessToken = async (): Promise<void> => {

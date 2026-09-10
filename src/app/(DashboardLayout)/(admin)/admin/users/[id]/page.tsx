@@ -2,13 +2,12 @@ import { notFound } from "next/navigation";
 
 import { UserDetailClient } from "../../../_component/user-detail-client";
 import { SystemRole } from "@/constants/user-role";
-import type { IUserSession } from "@/interfaces";
+import type { AdminUserDetail, IUserSession } from "@/interfaces";
 import {
   getAdminUserById,
   getAdminUserSessions,
-  type AdminUserDetail,
 } from "@/services/admin.service";
-import { getCurrentUser } from "@/service/auth.services";
+import { getCurrentUser } from "@/services/auth.service";
 
 export const dynamic = "force-dynamic";
 
