@@ -32,6 +32,38 @@ export const verifyOtp = async (data: {
   return response.data;
 };
 
+export const requestPasswordReset = async (
+  email: string
+): Promise<{ message: string; expiresAt: string }> => {
+  const response = await httpPost<{ message: string; expiresAt: string }>(
+    "/auth/forgot-password",
+    { email }
+  );
+  return response.data;
+};
+
+export const verifyPasswordResetOtp = async (data: {
+  email: string;
+  code: string;
+}): Promise<{ resetToken: string }> => {
+  const response = await httpPost<{ resetToken: string }>(
+    "/auth/forgot-password/verify-otp",
+    data
+  );
+  return response.data;
+};
+
+export const resetPassword = async (data: {
+  token: string;
+  newPassword: string;
+}): Promise<{ message: string }> => {
+  const response = await httpPost<{ message: string }>(
+    "/auth/forgot-password/reset",
+    data
+  );
+  return response.data;
+};
+
 export const changePassword = async (data: {
   currentPassword: string;
   newPassword: string;
@@ -40,7 +72,6 @@ export const changePassword = async (data: {
 };
 
 export const logout = async (): Promise<void> => {
-  
   await httpPost("/auth/logout", {});
 };
 
