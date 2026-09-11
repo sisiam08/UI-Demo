@@ -31,7 +31,7 @@ import {
   closeRequirement,
   getAdminRequirements,
 } from "@/services/admin.service";
-import { formatDate } from "@/lib/utils";
+import { formatDate } from "@/helpers/date-utils";
 
 function RequirementsClient({
   initialRequirements,

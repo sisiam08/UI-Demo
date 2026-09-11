@@ -37,7 +37,8 @@ import type { IStartupIdea } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { getAdminStartups } from "@/services/admin.service";
 import { closeStartup, deleteStartup } from "@/services/startup.service";
-import { formatDate, initials } from "@/lib/utils";
+import { formatDate } from "@/helpers/date-utils";
+import { initials } from "@/helpers/string-utils";
 
 function StartupsClient({
   initialStartups,

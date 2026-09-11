@@ -25,7 +25,7 @@ import {
   logout,
   revokeSession,
 } from "@/services/auth.service";
-import { formatDateTime } from "@/lib/utils";
+import { formatDateTime } from "@/helpers/date-utils";
 
 export default function SessionsClient({
   initialSessions,

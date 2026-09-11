@@ -18,7 +18,8 @@ import {
   getReceivedApplications,
   rejectApplication,
 } from "@/services/application.service";
-import { formatDate, initials } from "@/lib/utils";
+import { formatDate } from "@/helpers/date-utils";
+import { initials } from "@/helpers/string-utils";
 
 type Action = { type: "accept" | "reject"; appId: string };
 

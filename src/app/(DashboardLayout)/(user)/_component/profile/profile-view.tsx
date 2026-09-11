@@ -29,7 +29,7 @@ import { PROFILE_ROLE_LABELS } from "@/constants/options";
 import { envConfig } from "@/env";
 import type { IProfile, ProfileRole } from "@/interfaces";
 import { getMyProfile } from "@/services/profile.service";
-import { initials } from "@/lib/utils";
+import { initials } from "@/helpers/string-utils";
 import { toast } from "@/components/ui/toast";
 import { getApiErrorMessage } from "@/lib/api-error";
 

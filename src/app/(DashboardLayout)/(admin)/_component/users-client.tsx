@@ -29,7 +29,8 @@ import { toast } from "@/components/ui/toast";
 import type { IUser } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { getAdminUsers } from "@/services/admin.service";
-import { formatDate, initials } from "@/lib/utils";
+import { formatDate } from "@/helpers/date-utils";
+import { initials } from "@/helpers/string-utils";
 
 function UsersClient({
   initialUsers,

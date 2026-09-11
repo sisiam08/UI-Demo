@@ -3,7 +3,7 @@ import axios, {
   AxiosHeaders,
   InternalAxiosRequestConfig,
 } from "axios";
-import { IApiResponse } from "@/interfaces";
+import { CustomAxiosRequestConfig, IApiResponse } from "@/interfaces";
 import { envConfig } from "@/env";
 
 const API_URL = envConfig.NEXT_PUBLIC_API_URL;
@@ -83,11 +83,7 @@ api.interceptors.response.use(
   (response) => response,
 
   async (error: AxiosError) => {
-    const originalRequest = error.config as
-      | (InternalAxiosRequestConfig & {
-          _retry?: boolean;
-        })
-      | undefined;
+    const originalRequest = error.config as CustomAxiosRequestConfig | undefined;
 
     if (!originalRequest) {
       return Promise.reject(error);

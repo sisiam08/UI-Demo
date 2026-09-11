@@ -28,7 +28,8 @@ import { toast } from "@/components/ui/toast";
 import type { IUser } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { getCurrentUser, logout } from "@/services/auth.service";
-import { cn, initials } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { initials } from "@/helpers/string-utils";
 
 const NAV_LINKS = [
   { href: "/requirements/browse", label: "Browse", icon: Search },

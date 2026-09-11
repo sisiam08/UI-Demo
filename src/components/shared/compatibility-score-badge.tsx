@@ -1,4 +1,5 @@
-import { cn, scoreBg } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { scoreBg } from "@/helpers/score-utils";
 
 export default function CompatibilityScoreBadge({
   score,
@@ -18,7 +19,7 @@ export default function CompatibilityScoreBadge({
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full border font-semibold",
         scoreBg(score),
-        sizes[size],
+        sizes[size]
       )}
     >
       <svg
@@ -50,4 +51,3 @@ export default function CompatibilityScoreBadge({
     </span>
   );
 }
-

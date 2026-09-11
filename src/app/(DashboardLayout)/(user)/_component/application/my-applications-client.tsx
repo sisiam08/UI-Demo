@@ -26,7 +26,7 @@ import {
   getMyApplications,
   withdrawApplication,
 } from "@/services/application.service";
-import { formatDate } from "@/lib/utils";
+import { formatDate } from "@/helpers/date-utils";
 
 export default function MyApplicationsClient({
   initialApplications,

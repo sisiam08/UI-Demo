@@ -30,7 +30,8 @@ import { toast } from "@/components/ui/toast";
 import type { IApplication } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { getAdminApplications } from "@/services/admin.service";
-import { formatDate, initials } from "@/lib/utils";
+import { formatDate } from "@/helpers/date-utils";
+import { initials } from "@/helpers/string-utils";
 
 function ApplicationsClient({
   initialApplications,

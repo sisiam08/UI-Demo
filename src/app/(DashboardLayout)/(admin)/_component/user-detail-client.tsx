@@ -35,7 +35,7 @@ import {
   updateUserRole,
   updateUserStatus,
 } from "@/services/admin.service";
-import { formatDateTime } from "@/lib/utils";
+import { formatDateTime } from "@/helpers/date-utils";
 
 import { ReasonDialog } from "./reason-dialog";
 
