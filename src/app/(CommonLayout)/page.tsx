@@ -1,3 +1,5 @@
-export default function LandingPage() {
-  return <h1>Welcome to the Landing Page</h1>;
+import HomeComponent from "./_component/home/home-component";
+
+export default function HomePage() {
+  return <HomeComponent />;
 }
