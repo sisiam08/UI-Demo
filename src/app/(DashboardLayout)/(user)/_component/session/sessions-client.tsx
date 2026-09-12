@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { MonitorSmartphone, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -35,6 +35,68 @@ export default function SessionsClient({
   const router = useRouter();
   const [sessions, setSessions] = useState<IUserSession[]>(initialSessions);
   const [revokeId, setRevokeId] = useState<string | null>(null);
+
+  const [colWidths, setColWidths] = useState([45, 5, 10, 10, 6]);
+  const resizeRef = useRef<{
+    colIndex: number;
+    startX: number;
+    startWidths: number[];
+    tableWidth: number;
+  } | null>(null);
+  const tableRef = useRef<HTMLTableElement>(null);
+
+  function handleResizeStart(e: React.MouseEvent, colIndex: number) {
+    e.preventDefault();
+    const tableWidth = tableRef.current?.getBoundingClientRect().width ?? 800;
+    resizeRef.current = {
+      colIndex,
+      startX: e.clientX,
+      startWidths: [...colWidths],
+      tableWidth,
+    };
+  }
+
+  useEffect(() => {
+    const MIN_PCT = 5;
+
+    function handleMouseMove(e: MouseEvent) {
+      if (!resizeRef.current) return;
+      const { colIndex, startX, startWidths, tableWidth } = resizeRef.current;
+      const diffPx = e.clientX - startX;
+      const diffPct = (diffPx / tableWidth) * 100;
+
+      let newCurrent = startWidths[colIndex] + diffPct;
+      let newNext = startWidths[colIndex + 1] - diffPct;
+
+      if (newCurrent < MIN_PCT) {
+        newCurrent = MIN_PCT;
+        newNext = startWidths[colIndex] + startWidths[colIndex + 1] - MIN_PCT;
+      }
+      if (newNext < MIN_PCT) {
+        newNext = MIN_PCT;
+        newCurrent =
+          startWidths[colIndex] + startWidths[colIndex + 1] - MIN_PCT;
+      }
+
+      setColWidths((prev) => {
+        const next = [...prev];
+        next[colIndex] = newCurrent;
+        next[colIndex + 1] = newNext;
+        return next;
+      });
+    }
+
+    function handleMouseUp() {
+      resizeRef.current = null;
+    }
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, []);
 
   const reload = useCallback(async () => {
     try {
@@ -128,25 +190,57 @@ export default function SessionsClient({
       </div>
 
       <Card className="hidden sm:block">
-        <CardContent className="overflow-x-auto p-0">
-          <Table>
+        <CardContent className="p-0">
+          <Table ref={tableRef} style={{ tableLayout: "fixed", width: "100%" }}>
+            <colgroup>
+              {colWidths.map((w, i) => (
+                <col key={i} style={{ width: `${w}%` }} />
+              ))}
+            </colgroup>
             <TableHeader>
               <TableRow>
-                <TableHead>Device</TableHead>
-                <TableHead>IP</TableHead>
-                <TableHead>Last active</TableHead>
-                <TableHead>Expires</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                {["Device", "IP", "Last active", "Expires", "Action"].map(
+                  (header, i) => (
+                    <TableHead key={header} className="relative text-center">
+                      {header}
+                      {i < 4 && (
+                        <div
+                          onMouseDown={(e) => handleResizeStart(e, i)}
+                          style={{
+                            position: "absolute",
+                            right: 0,
+                            top: 0,
+                            bottom: 0,
+                            width: "4px",
+                            cursor: "col-resize",
+                            userSelect: "none",
+                            background: "transparent",
+                          }}
+                          onMouseEnter={(e) => {
+                            (
+                              e.currentTarget as HTMLDivElement
+                            ).style.background = "hsl(var(--border))";
+                          }}
+                          onMouseLeave={(e) => {
+                            (
+                              e.currentTarget as HTMLDivElement
+                            ).style.background = "transparent";
+                          }}
+                        />
+                      )}
+                    </TableHead>
+                  )
+                )}
               </TableRow>
             </TableHeader>
             <TableBody>
               {sessions.map((session, idx) => (
                 <TableRow key={session.id}>
-                  <TableCell>
+                  <TableCell className="overflow-hidden">
                     <div className="flex items-center gap-2">
                       <MonitorSmartphone className="size-4 text-muted-foreground" />
                       <div>
-                        <p className="text-sm font-medium">
+                        <p className="truncate text-sm font-medium">
                           {session.userAgent || "Unknown device"}
                         </p>
                         {idx === 0 && (
@@ -157,16 +251,16 @@ export default function SessionsClient({
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
+                  <TableCell className="truncate overflow-hidden text-center text-sm text-muted-foreground">
                     {session.ipAddress || "—"}
                   </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
+                  <TableCell className="truncate overflow-hidden text-center text-sm text-muted-foreground">
                     {formatDateTime(session.lastActiveAt)}
                   </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
+                  <TableCell className="truncate overflow-hidden text-center text-sm text-muted-foreground">
                     {formatDateTime(session.expiresAt)}
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-center">
                     {idx === 0 ? (
                       <Button
                         size="sm"
