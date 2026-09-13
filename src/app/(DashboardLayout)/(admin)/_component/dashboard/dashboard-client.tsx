@@ -1,15 +1,6 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-
-import {
-  FileText,
-  ListChecks,
-  Mail,
-  MonitorSmartphone,
-  Rocket,
-  Users,
-} from "lucide-react";
 import {
   Bar,
   BarChart,
@@ -156,7 +147,7 @@ function KpiRing({
   );
 }
 
-function DashboardClient() {
+export default function DashboardClient() {
   const [overview, setOverview] = useState<AdminOverview | null>(null);
   const [appStats, setAppStats] = useState<AdminApplicationStats | undefined>();
   const [reqStats, setReqStats] = useState<AdminRequirementStats | undefined>();
@@ -617,5 +608,3 @@ function DashboardClient() {
     </div>
   );
 }
-
-export { DashboardClient };

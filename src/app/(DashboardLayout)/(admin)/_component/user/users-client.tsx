@@ -32,7 +32,7 @@ import { getAdminUsers } from "@/services/admin.service";
 import { formatDate } from "@/helpers/date-utils";
 import { initials } from "@/helpers/string-utils";
 
-function UsersClient({
+export default function UsersClient({
   initialUsers,
   initialTotal,
   initialLimit,
@@ -259,5 +259,3 @@ function UsersClient({
     </div>
   );
 }
-
-export { UsersClient };

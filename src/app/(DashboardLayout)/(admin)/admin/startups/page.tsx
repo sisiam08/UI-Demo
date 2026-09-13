@@ -1,5 +1,5 @@
 import type { AdminStartupsPage } from "@/interfaces";
-import { StartupsClient } from "../../_component/startup/startups-client";
+import StartupsClient from "../../_component/startup/startups-client";
 import { getAdminStartups } from "@/services/admin.service";
 
 export const dynamic = "force-dynamic";

@@ -37,9 +37,9 @@ import {
 } from "@/services/admin.service";
 import { formatDateTime } from "@/helpers/date-utils";
 
-import { ReasonDialog } from "../shared/reason-dialog";
+import ReasonDialog from "../shared/reason-dialog";
 
-function UserDetailClient({
+export default function UserDetailClient({
   user,
   sessions,
   isSuperAdmin,
@@ -369,5 +369,3 @@ function UserDetailClient({
     </div>
   );
 }
-
-export { UserDetailClient };

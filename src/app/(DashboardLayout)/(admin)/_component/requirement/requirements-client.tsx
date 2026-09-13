@@ -33,7 +33,7 @@ import {
 } from "@/services/admin.service";
 import { formatDate } from "@/helpers/date-utils";
 
-function RequirementsClient({
+export default function RequirementsClient({
   initialRequirements,
   initialTotal,
   initialLimit,
@@ -265,5 +265,3 @@ function RequirementsClient({
     </div>
   );
 }
-
-export { RequirementsClient };

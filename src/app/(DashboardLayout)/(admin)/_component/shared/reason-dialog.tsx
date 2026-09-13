@@ -13,7 +13,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
-function ReasonDialog({
+export default function ReasonDialog({
   open,
   onOpenChange,
   title,
@@ -64,5 +64,3 @@ function ReasonDialog({
     </Dialog>
   );
 }
-
-export { ReasonDialog };

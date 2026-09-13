@@ -33,7 +33,7 @@ import { getAdminApplications } from "@/services/admin.service";
 import { formatDate } from "@/helpers/date-utils";
 import { initials } from "@/helpers/string-utils";
 
-function ApplicationsClient({
+export default function ApplicationsClient({
   initialApplications,
   initialTotal,
   initialLimit,
@@ -259,5 +259,3 @@ function ApplicationsClient({
     </div>
   );
 }
-
-export { ApplicationsClient };

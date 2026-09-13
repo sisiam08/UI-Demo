@@ -40,7 +40,7 @@ import { closeStartup, deleteStartup } from "@/services/startup.service";
 import { formatDate } from "@/helpers/date-utils";
 import { initials } from "@/helpers/string-utils";
 
-function StartupsClient({
+export default function StartupsClient({
   initialStartups,
   initialTotal,
   initialLimit,
@@ -303,5 +303,3 @@ function StartupsClient({
     </div>
   );
 }
-
-export { StartupsClient };
