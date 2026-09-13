@@ -37,7 +37,7 @@ import {
 } from "@/services/admin.service";
 import { formatDateTime } from "@/helpers/date-utils";
 
-import { ReasonDialog } from "./reason-dialog";
+import { ReasonDialog } from "../shared/reason-dialog";
 
 function UserDetailClient({
   user,

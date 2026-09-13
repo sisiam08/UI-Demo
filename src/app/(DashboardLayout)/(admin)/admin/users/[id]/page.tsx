@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { UserDetailClient } from "../../../_component/user-detail-client";
+import { UserDetailClient } from "../../../_component/user/user-detail-client";
 import { SystemRole } from "@/constants/user-role";
 import type { AdminUserDetail, IUserSession } from "@/interfaces";
 import {

@@ -2,21 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import {
-  Archive,
-  ChevronLeft,
-  ChevronRight,
-  Search,
-  Trash2,
-} from "lucide-react";
-import Link from "next/link";
+import { Archive, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { SkeletonRows } from "@/components/shared/skeletons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -33,51 +25,62 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/toast";
-import type { IStartupIdea } from "@/interfaces";
+import type { ICofounderRequirement } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { getAdminStartups } from "@/services/admin.service";
-import { closeStartup, deleteStartup } from "@/services/startup.service";
+import {
+  closeRequirement,
+  getAdminRequirements,
+} from "@/services/admin.service";
 import { formatDate } from "@/helpers/date-utils";
-import { initials } from "@/helpers/string-utils";
 
-function StartupsClient({
-  initialStartups,
+function RequirementsClient({
+  initialRequirements,
   initialTotal,
   initialLimit,
+  initialError,
 }: {
-  initialStartups: IStartupIdea[];
+  initialRequirements: ICofounderRequirement[];
   initialTotal: number;
   initialLimit: number;
+  initialError?: string;
 }) {
   const [status, setStatus] = useState("all");
-  const [search, setSearch] = useState("");
+  const [role, setRole] = useState("all");
   const [page, setPage] = useState(1);
-  const [startups, setStartups] = useState(initialStartups);
+  const [requirements, setRequirements] = useState(initialRequirements);
   const [total, setTotal] = useState(initialTotal);
   const [limit, setLimit] = useState(initialLimit);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(initialError ?? null);
   const [closeId, setCloseId] = useState<string | null>(null);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
   const initializedRef = useRef(false);
+  const requestIdRef = useRef(0);
 
-  const fetchStartups = useCallback(
+  const fetchRequirements = useCallback(
     async (targetPage = page) => {
+      const requestId = ++requestIdRef.current;
+      setLoading(true);
+      setError(null);
       try {
-        const res = await getAdminStartups({
+        const res = await getAdminRequirements({
           status,
-          search,
+          role,
           page: targetPage,
         });
-        setStartups(res.startups);
+        if (requestId !== requestIdRef.current) return;
+        setRequirements(res.requirements);
         setTotal(res.total);
         setLimit(res.limit);
       } catch (error) {
-        toast.add({ type: "error", description: getApiErrorMessage(error) });
+        if (requestId !== requestIdRef.current) return;
+        const message = getApiErrorMessage(error);
+        setError(message);
+        toast.add({ type: "error", description: message });
       } finally {
-        setLoading(false);
+        if (requestId === requestIdRef.current) setLoading(false);
       }
     },
-    [status, search, page]
+    [status, role, page]
   );
 
   useEffect(() => {
@@ -85,30 +88,17 @@ function StartupsClient({
       initializedRef.current = true;
       return;
     }
-    let active = true;
-    (async () => {
-      if (active) await fetchStartups();
-    })();
+    void fetchRequirements();
     return () => {
-      active = false;
+      requestIdRef.current += 1;
     };
-  }, [fetchStartups]);
+  }, [fetchRequirements]);
 
   async function handleClose(id: string) {
     try {
-      await closeStartup(id);
-      toast.add({ type: "success", description: "Startup closed" });
-      await fetchStartups();
-    } catch (error) {
-      toast.add({ type: "error", description: getApiErrorMessage(error) });
-    }
-  }
-
-  async function handleDelete(id: string) {
-    try {
-      await deleteStartup(id);
-      toast.add({ type: "success", description: "Startup removed" });
-      await fetchStartups();
+      await closeRequirement(id);
+      toast.add({ type: "success", description: "Requirement closed" });
+      await fetchRequirements();
     } catch (error) {
       toast.add({ type: "error", description: getApiErrorMessage(error) });
     }
@@ -118,7 +108,7 @@ function StartupsClient({
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Content Moderation — Startups</h1>
+      <h1 className="text-2xl font-bold">Content Moderation — Requirements</h1>
 
       <div className="flex flex-wrap items-end gap-3 rounded-xl border border-border bg-card p-4">
         <div className="space-y-1">
@@ -143,88 +133,89 @@ function StartupsClient({
             </SelectContent>
           </Select>
         </div>
-        <div className="flex-1 space-y-1">
+        <div className="space-y-1">
           <label className="text-xs font-medium text-muted-foreground">
-            Search
+            Role
           </label>
-          <div className="relative">
-            <Search className="absolute top-3 left-3 size-4 text-muted-foreground" />
-            <Input
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-                setLoading(true);
-              }}
-              placeholder="Title or description..."
-              className="pl-9"
-            />
-          </div>
+          <Select
+            value={role}
+            onValueChange={(v) => {
+              setRole(v as string);
+              setPage(1);
+              setLoading(true);
+            }}
+          >
+            <SelectTrigger className="w-full sm:w-36">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="technical">Technical</SelectItem>
+              <SelectItem value="design">Design</SelectItem>
+              <SelectItem value="marketing">Marketing</SelectItem>
+              <SelectItem value="business">Business</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
       {loading ? (
         <SkeletonRows />
+      ) : error ? (
+        <Card>
+          <CardContent className="p-6 text-sm text-destructive">
+            {error}
+          </CardContent>
+        </Card>
+      ) : requirements.length === 0 ? (
+        <Card>
+          <CardContent className="p-6 text-center text-sm text-muted-foreground">
+            No requirements match the selected filters.
+          </CardContent>
+        </Card>
       ) : (
         <Card>
           <CardContent className="overflow-x-auto p-0">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Owner</TableHead>
+                  <TableHead>Startup</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Commitment</TableHead>
+                  <TableHead>Equity</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Created</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {startups.map((startup) => (
-                  <TableRow key={startup.id}>
+                {requirements.map((req) => (
+                  <TableRow key={req.id}>
                     <TableCell className="font-medium">
-                      {startup.title}
+                      {req.startupIdea?.title ?? "—"}
                     </TableCell>
-                    <TableCell>
-                      {startup.owner && (
-                        <Link
-                          href={`/admin/users/${startup.owner.id}`}
-                          className="flex items-center gap-2 hover:underline"
-                        >
-                          <div className="flex size-6 items-center justify-center rounded-full bg-muted text-xs">
-                            {initials(startup.owner.fullName)}
-                          </div>
-                          {startup.owner.fullName}
-                        </Link>
-                      )}
+                    <TableCell className="capitalize">
+                      {req.requiredRole}
                     </TableCell>
+                    <TableCell>{req.requiredWeeklyCommitment}h/wk</TableCell>
+                    <TableCell>{Number(req.equityOffered)}%</TableCell>
                     <TableCell>
-                      <StatusBadge status={startup.status} />
+                      <StatusBadge status={req.status} />
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {formatDate(startup.createdAt)}
+                      {formatDate(req.createdAt)}
                     </TableCell>
                     <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        {startup.status === "open" && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setCloseId(startup.id)}
-                          >
-                            <Archive className="size-4" />
-                            Close
-                          </Button>
-                        )}
+                      {req.status === "open" && (
                         <Button
                           size="sm"
-                          variant="ghost"
-                          className="text-destructive"
-                          onClick={() => setDeleteId(startup.id)}
+                          variant="outline"
+                          onClick={() => setCloseId(req.id)}
                         >
-                          <Trash2 className="size-4" />
-                          Remove
+                          <Archive className="size-4" />
+                          Close
                         </Button>
-                      </div>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -267,21 +258,12 @@ function StartupsClient({
       <ConfirmDialog
         open={!!closeId}
         onOpenChange={(open) => !open && setCloseId(null)}
-        title="Force-close this startup?"
+        title="Force-close this requirement?"
         confirmLabel="Close"
         onConfirm={() => closeId && void handleClose(closeId)}
-      />
-      <ConfirmDialog
-        open={!!deleteId}
-        onOpenChange={(open) => !open && setDeleteId(null)}
-        title="Remove this startup permanently?"
-        description="This cascades to all its requirements and applications."
-        confirmLabel="Remove permanently"
-        variant="destructive"
-        onConfirm={() => deleteId && void handleDelete(deleteId)}
       />
     </div>
   );
 }
 
-export { StartupsClient };
+export { RequirementsClient };

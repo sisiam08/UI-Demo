@@ -14,6 +14,13 @@ export interface AdminOverview {
   applications: Record<string, number>;
   messages: number;
   activeSessions: number;
+  usersByStatus: Record<string, number>;
+  startupsByStatus: Record<string, number>;
+  applicationSummary: {
+    total: number;
+    accepted: number;
+    acceptanceRate: number;
+  };
 }
 
 export interface AdminApplicationStats {

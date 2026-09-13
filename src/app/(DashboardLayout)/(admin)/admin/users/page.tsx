@@ -1,15 +1,16 @@
 import type { AdminUsersPage } from "@/interfaces";
-import { UsersClient } from "../../_component/users-client";
+import { UsersClient } from "../../_component/user/users-client";
 import { getAdminUsers } from "@/services/admin.service";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminUsersPage() {
   let data: AdminUsersPage = { users: [], total: 0, page: 1, limit: 20 };
+  let initialError: string | undefined;
   try {
     data = await getAdminUsers({ page: 1 });
   } catch {
-    data = { users: [], total: 0, page: 1, limit: 20 };
+    initialError = "Unable to load users.";
   }
 
   return (
@@ -17,6 +18,7 @@ export default async function AdminUsersPage() {
       initialUsers={data.users}
       initialTotal={data.total}
       initialLimit={data.limit}
+      initialError={initialError}
     />
   );
 }

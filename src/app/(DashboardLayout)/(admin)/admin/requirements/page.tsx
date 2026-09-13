@@ -1,8 +1,6 @@
 import type { AdminRequirementsPage } from "@/interfaces";
-import { RequirementsClient } from "../../_component/requirements-client";
-import {
-  getAdminRequirements,
-} from "@/services/admin.service";
+import { RequirementsClient } from "../../_component/requirement/requirements-client";
+import { getAdminRequirements } from "@/services/admin.service";
 
 export const dynamic = "force-dynamic";
 
@@ -13,10 +11,11 @@ export default async function AdminRequirementsPage() {
     page: 1,
     limit: 20,
   };
+  let initialError: string | undefined;
   try {
     data = await getAdminRequirements({ page: 1 });
   } catch {
-    data = { requirements: [], total: 0, page: 1, limit: 20 };
+    initialError = "Unable to load requirements.";
   }
 
   return (
@@ -24,6 +23,7 @@ export default async function AdminRequirementsPage() {
       initialRequirements={data.requirements}
       initialTotal={data.total}
       initialLimit={data.limit}
+      initialError={initialError}
     />
   );
 }

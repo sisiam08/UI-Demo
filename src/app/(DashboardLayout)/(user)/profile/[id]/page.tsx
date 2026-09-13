@@ -5,9 +5,9 @@ import { getMyProfile, getProfileById } from "@/services/profile.service";
 export default async function ProfilePage({
   params,
 }: {
-  params: Promise<{ userId?: string }>;
+  params: Promise<{ id?: string }>;
 }) {
-  const { userId: targetUserId } = await params;
+  const { id: targetUserId } = await params;
   const isOwnProfile = !targetUserId;
 
   let profile: IProfile | null = null;

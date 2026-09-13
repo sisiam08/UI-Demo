@@ -37,10 +37,12 @@ function ApplicationsClient({
   initialApplications,
   initialTotal,
   initialLimit,
+  initialError,
 }: {
   initialApplications: IApplication[];
   initialTotal: number;
   initialLimit: number;
+  initialError?: string;
 }) {
   const [status, setStatus] = useState("all");
   const [requirementId, setRequirementId] = useState("");
@@ -50,10 +52,15 @@ function ApplicationsClient({
   const [total, setTotal] = useState(initialTotal);
   const [limit, setLimit] = useState(initialLimit);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(initialError ?? null);
   const initializedRef = useRef(false);
+  const requestIdRef = useRef(0);
 
   const fetchApplications = useCallback(
     async (targetPage = page) => {
+      const requestId = ++requestIdRef.current;
+      setLoading(true);
+      setError(null);
       try {
         const res = await getAdminApplications({
           status,
@@ -61,13 +68,17 @@ function ApplicationsClient({
           candidateId,
           page: targetPage,
         });
+        if (requestId !== requestIdRef.current) return;
         setApplications(res.applications);
         setTotal(res.total);
         setLimit(res.limit);
       } catch (error) {
-        toast.add({ type: "error", description: getApiErrorMessage(error) });
+        if (requestId !== requestIdRef.current) return;
+        const message = getApiErrorMessage(error);
+        setError(message);
+        toast.add({ type: "error", description: message });
       } finally {
-        setLoading(false);
+        if (requestId === requestIdRef.current) setLoading(false);
       }
     },
     [status, requirementId, candidateId, page]
@@ -78,12 +89,9 @@ function ApplicationsClient({
       initializedRef.current = true;
       return;
     }
-    let active = true;
-    (async () => {
-      if (active) await fetchApplications();
-    })();
+    void fetchApplications();
     return () => {
-      active = false;
+      requestIdRef.current += 1;
     };
   }, [fetchApplications]);
 
@@ -158,6 +166,18 @@ function ApplicationsClient({
 
       {loading ? (
         <SkeletonRows />
+      ) : error ? (
+        <Card>
+          <CardContent className="p-6 text-sm text-destructive">
+            {error}
+          </CardContent>
+        </Card>
+      ) : applications.length === 0 ? (
+        <Card>
+          <CardContent className="p-6 text-center text-sm text-muted-foreground">
+            No applications match the selected filters.
+          </CardContent>
+        </Card>
       ) : (
         <Card>
           <CardContent className="overflow-x-auto p-0">

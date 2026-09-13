@@ -36,10 +36,12 @@ function UsersClient({
   initialUsers,
   initialTotal,
   initialLimit,
+  initialError,
 }: {
   initialUsers: IUser[];
   initialTotal: number;
   initialLimit: number;
+  initialError?: string;
 }) {
   const [status, setStatus] = useState("all");
   const [role, setRole] = useState("all");
@@ -49,10 +51,15 @@ function UsersClient({
   const [total, setTotal] = useState(initialTotal);
   const [limit, setLimit] = useState(initialLimit);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(initialError ?? null);
   const initializedRef = useRef(false);
+  const requestIdRef = useRef(0);
 
   const fetchUsers = useCallback(
     async (targetPage = page) => {
+      const requestId = ++requestIdRef.current;
+      setLoading(true);
+      setError(null);
       try {
         const res = await getAdminUsers({
           status,
@@ -60,13 +67,17 @@ function UsersClient({
           search,
           page: targetPage,
         });
+        if (requestId !== requestIdRef.current) return;
         setUsers(res.users);
         setTotal(res.total);
         setLimit(res.limit);
       } catch (error) {
-        toast.add({ type: "error", description: getApiErrorMessage(error) });
+        if (requestId !== requestIdRef.current) return;
+        const message = getApiErrorMessage(error);
+        setError(message);
+        toast.add({ type: "error", description: message });
       } finally {
-        setLoading(false);
+        if (requestId === requestIdRef.current) setLoading(false);
       }
     },
     [status, role, search, page]
@@ -77,12 +88,9 @@ function UsersClient({
       initializedRef.current = true;
       return;
     }
-    let active = true;
-    (async () => {
-      if (active) await fetchUsers();
-    })();
+    void fetchUsers();
     return () => {
-      active = false;
+      requestIdRef.current += 1;
     };
   }, [fetchUsers]);
 
@@ -159,6 +167,18 @@ function UsersClient({
 
       {loading ? (
         <SkeletonRows />
+      ) : error ? (
+        <Card>
+          <CardContent className="p-6 text-sm text-destructive">
+            {error}
+          </CardContent>
+        </Card>
+      ) : users.length === 0 ? (
+        <Card>
+          <CardContent className="p-6 text-center text-sm text-muted-foreground">
+            No users match the selected filters.
+          </CardContent>
+        </Card>
       ) : (
         <Card>
           <CardContent className="overflow-x-auto p-0">

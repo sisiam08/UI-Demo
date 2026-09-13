@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 import {
   Briefcase,
@@ -44,9 +45,15 @@ const ROLE_COLORS: Record<ProfileRole, string> = {
 const API_ORIGIN = new URL(envConfig.NEXT_PUBLIC_API_URL).origin;
 
 function loadPhoto(photoUrl: string | null) {
-  if (!photoUrl) return null;
-  if (photoUrl.startsWith("http")) return photoUrl;
-  return `${API_ORIGIN}${photoUrl}`;
+  if (!photoUrl?.trim()) return null;
+
+  try {
+    const url = new URL(photoUrl, API_ORIGIN);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+    return url.toString();
+  } catch {
+    return null;
+  }
 }
 
 function SocialLinks({ profile }: { profile: IProfile }) {
@@ -179,10 +186,13 @@ export default function ProfileView({
           <div className="-mt-12 mb-4 flex items-end justify-between gap-3">
             <div className="shrink-0 rounded-full ring-4 ring-card">
               {photoSrc ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   src={photoSrc}
                   alt={profile.user?.fullName ?? "Avatar"}
+                  width={80}
+                  height={80}
+                  loader={({ src }) => src}
+                  unoptimized
                   className="size-20 rounded-full object-cover"
                 />
               ) : (

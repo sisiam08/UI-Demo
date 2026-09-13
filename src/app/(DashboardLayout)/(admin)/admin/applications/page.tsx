@@ -1,8 +1,6 @@
 import type { AdminApplicationsPage } from "@/interfaces";
-import { ApplicationsClient } from "../../_component/applications-client";
-import {
-  getAdminApplications,
-} from "@/services/admin.service";
+import { ApplicationsClient } from "../../_component/application/applications-client";
+import { getAdminApplications } from "@/services/admin.service";
 
 export const dynamic = "force-dynamic";
 
@@ -13,10 +11,11 @@ export default async function AdminApplicationsPage() {
     page: 1,
     limit: 20,
   };
+  let initialError: string | undefined;
   try {
     data = await getAdminApplications({ page: 1 });
   } catch {
-    data = { applications: [], total: 0, page: 1, limit: 20 };
+    initialError = "Unable to load applications.";
   }
 
   return (
@@ -24,6 +23,7 @@ export default async function AdminApplicationsPage() {
       initialApplications={data.applications}
       initialTotal={data.total}
       initialLimit={data.limit}
+      initialError={initialError}
     />
   );
 }

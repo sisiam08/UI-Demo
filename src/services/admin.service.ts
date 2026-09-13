@@ -47,7 +47,7 @@ export const getAdminUsers = async (
 ): Promise<AdminUsersPage> => {
   const query: Record<string, string> = {};
   if (params.status && params.status !== "all") query.status = params.status;
-  if (params.role && params.role !== "all") query.role = params.role;
+  if (params.role && params.role !== "all") query.systemRole = params.role;
   if (params.search) query.search = params.search;
   if (params.page) query.page = String(params.page);
   const response = await httpGet<AdminUsersPage>("/users", query);
