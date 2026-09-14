@@ -176,6 +176,13 @@
   --border: 220 13% 88%;
   --input: 220 13% 88%;
   --ring: 244 58% 51%;
+
+  --chart-cyan: #2eb5e5;
+  --chart-violet: #8b7cf6;
+  --chart-amber: #f0a35b;
+  --chart-pink: #e45b9d;
+  --chart-grid: #334155;
+  --chart-muted: #94a3b8;
 }
 
 .dark .admin-panel {
@@ -202,6 +209,13 @@
   --border: 220 14% 22%;
   --input: 220 14% 22%;
   --ring: 244 62% 63%;
+
+  --chart-cyan: #2eb5e5;
+  --chart-violet: #9b8df8;
+  --chart-amber: #f3ad68;
+  --chart-pink: #ed6eaa;
+  --chart-grid: #334155;
+  --chart-muted: #94a3b8;
 }
 
 

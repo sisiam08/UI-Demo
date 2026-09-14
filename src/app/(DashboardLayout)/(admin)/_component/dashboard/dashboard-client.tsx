@@ -34,15 +34,6 @@ import {
   AdminSignupRow,
 } from "@/interfaces";
 
-const chartColors = {
-  cyan: "#2eb5e5",
-  violet: "#8b7cf6",
-  amber: "#f0a35b",
-  pink: "#e45b9d",
-  grid: "#334155",
-  muted: "#94a3b8",
-};
-
 function ChartMessage({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-62.5 items-center justify-center rounded-lg border border-dashed border-border/70 bg-muted/20 px-6 text-center text-sm text-muted-foreground">
@@ -122,7 +113,7 @@ function KpiRing({
             >
               <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
               <RadialBar
-                background={{ fill: "#334155" }}
+                background={{ fill: "var(--chart-grid)" }}
                 dataKey="value"
                 cornerRadius={8}
               />
@@ -255,13 +246,13 @@ export default function DashboardClient() {
       label: "Active sessions",
       value: overview?.activeSessions ?? "—",
       percent: percentOf(overview?.activeSessions ?? 0, overview?.users ?? 0),
-      color: chartColors.cyan,
+      color: "var(--chart-cyan)",
     },
     {
       label: "Open requirements",
       value: overview?.requirements.open ?? "—",
       percent: percentOf(reqStats?.open ?? 0, totalRequirements),
-      color: chartColors.violet,
+      color: "var(--chart-violet)",
     },
     {
       label: "Pending applications",
@@ -270,7 +261,7 @@ export default function DashboardClient() {
         overview?.applications.pending ?? 0,
         totalApplications
       ),
-      color: chartColors.pink,
+      color: "var(--chart-pink)",
     },
     {
       label: "Open startups",
@@ -279,7 +270,7 @@ export default function DashboardClient() {
         overview?.startupsByStatus?.open ?? 0,
         overview?.startups ?? 0
       ),
-      color: chartColors.amber,
+      color: "var(--chart-amber)",
     },
   ];
 
@@ -316,21 +307,21 @@ export default function DashboardClient() {
               value: overview?.usersByStatus?.active ?? 0,
               total: overview?.users ?? 0,
               detail: `${overview?.usersByStatus?.suspended ?? 0} suspended - ${overview?.usersByStatus?.banned ?? 0} banned`,
-              color: chartColors.cyan,
+              color: "var(--chart-cyan)",
             },
             {
               label: "Startup availability",
               value: overview?.startupsByStatus?.open ?? 0,
               total: overview?.startups ?? 0,
               detail: `${overview?.startupsByStatus?.closed ?? 0} closed`,
-              color: chartColors.violet,
+              color: "var(--chart-violet)",
             },
             {
               label: "Application success",
               value: overview?.applicationSummary?.accepted ?? 0,
               total: overview?.applicationSummary?.total ?? totalApplications,
               detail: `${overview?.applicationSummary?.acceptanceRate ?? 0}% accepted`,
-              color: chartColors.amber,
+              color: "var(--chart-amber)",
             },
           ].map((metric) => {
             const percentage = percentOf(metric.value, metric.total);
@@ -390,19 +381,19 @@ export default function DashboardClient() {
                     <linearGradient id="signupFill" x1="0" y1="0" x2="0" y2="1">
                       <stop
                         offset="0%"
-                        stopColor={chartColors.cyan}
+                        stopColor="var(--chart-cyan)"
                         stopOpacity={0.32}
                       />
                       <stop
                         offset="100%"
-                        stopColor={chartColors.cyan}
+                        stopColor="var(--chart-cyan)"
                         stopOpacity={0.02}
                       />
                     </linearGradient>
                   </defs>
                   <CartesianGrid
                     vertical={false}
-                    stroke={chartColors.grid}
+                    stroke="var(--chart-grid)"
                     strokeOpacity={0.5}
                   />
                   <XAxis
@@ -410,20 +401,20 @@ export default function DashboardClient() {
                     axisLine={false}
                     tickLine={false}
                     fontSize={11}
-                    stroke={chartColors.muted}
+                    stroke="var(--chart-muted)"
                   />
                   <YAxis
                     axisLine={false}
                     tickLine={false}
                     fontSize={11}
                     allowDecimals={false}
-                    stroke={chartColors.muted}
+                    stroke="var(--chart-muted)"
                   />
                   <Tooltip cursor={false} content={<ChartTooltip />} />
                   <Area
                     type="monotone"
                     dataKey="signups"
-                    stroke={chartColors.cyan}
+                    stroke="var(--chart-cyan)"
                     strokeWidth={2.5}
                     fill="url(#signupFill)"
                     activeDot={{ r: 5 }}
@@ -456,7 +447,7 @@ export default function DashboardClient() {
                 >
                   <CartesianGrid
                     vertical={false}
-                    stroke={chartColors.grid}
+                    stroke="var(--chart-grid)"
                     strokeOpacity={0.5}
                   />
                   <XAxis
@@ -464,14 +455,14 @@ export default function DashboardClient() {
                     axisLine={false}
                     tickLine={false}
                     fontSize={11}
-                    stroke={chartColors.muted}
+                    stroke="var(--chart-muted)"
                   />
                   <YAxis
                     axisLine={false}
                     tickLine={false}
                     fontSize={11}
                     allowDecimals={false}
-                    stroke={chartColors.muted}
+                    stroke="var(--chart-muted)"
                   />
                   <Tooltip cursor={false} content={<ChartTooltip />} />
                   <Bar dataKey="count" radius={[5, 5, 0, 0]}>
@@ -480,10 +471,10 @@ export default function DashboardClient() {
                         key={entry.name}
                         fill={
                           [
-                            chartColors.violet,
-                            chartColors.cyan,
-                            chartColors.amber,
-                            chartColors.pink,
+                            "var(--chart-violet)",
+                            "var(--chart-cyan)",
+                            "var(--chart-amber)",
+                            "var(--chart-pink)",
                           ][index % 4]
                         }
                       />
@@ -519,7 +510,7 @@ export default function DashboardClient() {
                 >
                   <CartesianGrid
                     vertical={false}
-                    stroke={chartColors.grid}
+                    stroke="var(--chart-grid)"
                     strokeOpacity={0.5}
                   />
                   <XAxis
@@ -527,19 +518,19 @@ export default function DashboardClient() {
                     axisLine={false}
                     tickLine={false}
                     fontSize={11}
-                    stroke={chartColors.muted}
+                    stroke="var(--chart-muted)"
                   />
                   <YAxis
                     axisLine={false}
                     tickLine={false}
                     fontSize={11}
                     allowDecimals={false}
-                    stroke={chartColors.muted}
+                    stroke="var(--chart-muted)"
                   />
                   <Tooltip cursor={false} content={<ChartTooltip />} />
                   <Bar dataKey="count" radius={[5, 5, 0, 0]}>
-                    <Cell fill={chartColors.cyan} />
-                    <Cell fill={chartColors.amber} />
+                    <Cell fill="var(--chart-cyan)" />
+                    <Cell fill="var(--chart-amber)" />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -572,7 +563,7 @@ export default function DashboardClient() {
                 >
                   <CartesianGrid
                     horizontal={false}
-                    stroke={chartColors.grid}
+                    stroke="var(--chart-grid)"
                     strokeOpacity={0.5}
                   />
                   <XAxis
@@ -581,7 +572,7 @@ export default function DashboardClient() {
                     tickLine={false}
                     fontSize={11}
                     allowDecimals={false}
-                    stroke={chartColors.muted}
+                    stroke="var(--chart-muted)"
                   />
                   <YAxis
                     type="category"
@@ -589,13 +580,13 @@ export default function DashboardClient() {
                     axisLine={false}
                     tickLine={false}
                     fontSize={11}
-                    stroke={chartColors.muted}
+                    stroke="var(--chart-muted)"
                     width={72}
                   />
                   <Tooltip content={<ChartTooltip />} />
                   <Bar
                     dataKey="count"
-                    fill={chartColors.amber}
+                    fill="var(--chart-amber)"
                     radius={[0, 5, 5, 0]}
                     barSize={18}
                   />
